@@ -12,8 +12,6 @@ using Discord.Commands;
 using CommunityBot.Features.Lists;
 using CommunityBot.Features.Onboarding;
 using CommunityBot.Features.GlobalAccounts;
-using CommunityBot.DiscordAbstractions;
-using CommunityBot.Features.Economy;
 using CommunityBot.Features.Onboarding.Tasks;
 using CommunityBot.Providers;
 using CommunityBot.Helpers;
@@ -76,9 +74,6 @@ namespace CommunityBot
             serviceCollection.AddSingleton<IOnboarding, Onboarding>();
             serviceCollection.AddSingleton<HelloWorldTask>();
             serviceCollection.AddSingleton<IGlobalUserAccounts, GlobalUserAccounts>(); //todo: delete
-            serviceCollection.AddSingleton<IDiscordSocketClient, DiscordSocketClientAbstraction>();
-            serviceCollection.AddSingleton<IDailyMiunies, Daily>();
-            serviceCollection.AddSingleton<IMiuniesTransfer, Transfer>();
 
             serviceCollection.AddSingleton<BlogHandler>();
             serviceCollection.AddSingleton<GlobalGuildAccounts>();

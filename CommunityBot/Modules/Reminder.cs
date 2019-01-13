@@ -52,7 +52,7 @@ namespace CommunityBot.Modules
             _globalUserAccounts = globalUserAccounts;
         }
 
-        [Command(""), Alias("New", "Add"), Priority(0), Remarks("Add a reminder")]
+        [Command("New"), Alias("Add"), Priority(0), Remarks("Add a reminder")]
         public async Task AddReminder([Remainder] string args)
         {
             string[] splittedArgs = null;
@@ -100,7 +100,7 @@ namespace CommunityBot.Modules
             ReplyAsync("", false, embed.Build());
         }
 
-        [Command("")]
+        [Command("On")]
         [Alias("RemindOn")]
         [Priority(1)]
         [Remarks("Add a reminder On")]

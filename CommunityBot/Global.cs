@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using CommunityBot.Features.Economy;
 using CommunityBot.Features.RepeatedTasks;
 using Discord;
 using Discord.WebSocket;
@@ -16,7 +15,6 @@ namespace CommunityBot
         internal static DiscordSocketClient Client { get; set; }
         internal static Dictionary<ulong, string> MessagesIdToTrack { get; set; }
         internal static Random Rng { get; set; } = new Random();
-        internal static Slot Slot = new Slot();
         internal static RepeatedTaskHandler TaskHander = new RepeatedTaskHandler();
         internal static readonly String version = Assembly.GetExecutingAssembly().GetName().Version.ToString().TrimEnd('0').TrimEnd('.');
         internal static bool Headless = false;
@@ -49,56 +47,6 @@ namespace CommunityBot
             return messageString.Replace("<botmention>", Client.CurrentUser.Mention)
                 .Replace("<botdiscriminator>", Client.CurrentUser.Discriminator)
                 .Replace("<botname>", Client.CurrentUser.Username);
-        }
-
-        public static string GetMiuniesCountReaction(ulong value, string mention)
-        {
-            if (value > 100000)
-            {
-                return $"Wow, {mention}! You're either cheating or you're really dedicated.";
-            }
-            if (value > 50000)
-            {
-                return $"You must be here often, {mention}. Do you have a crush on me or something?";
-            }
-            if (value > 20000)
-            {
-                return $"That's enough to buy a house... In Miunie land... \n\nIt's a real place, shut up, {mention}!";
-            }
-            if (value > 10000)
-            {
-                return $"{mention} is kinda getting rich. Do we rob them or what?";
-            }
-            if (value > 5000)
-            {
-                return $"Is it just me or is {mention} taking this economy a little too seriously?";
-            }
-            if (value > 2500)
-            {
-                return $"Great, {mention}! Now you can give all those miunies to your superior mistress, ME.";
-            }
-            if (value > 1100)
-            {
-                return $"{mention} is showing their wealth on the internet again.";
-            }
-            if (value > 800)
-            {
-                return $"Alright, {mention}. Put the miunies in the back and nobody gets hurt.";
-            }
-            if (value > 550)
-            {
-                return $"I like how {mention} think that's impressive.";
-            }
-            if (value > 200)
-            {
-                return $"Outch, {mention}! If I knew that is all you've got, I would just DM you the amount. Embarrassing!";
-            }
-            if (value == 0)
-            {
-                return $"Yea, {mention} is broke. What a surprise.";
-            }
-
-            return "The whole concept of miunies is fake. I hope you know that";
         }
 
         public static async Task<string> SendWebRequest(string requestUrl)
