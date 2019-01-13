@@ -7,7 +7,6 @@ using CommunityBot.Configuration;
 using CommunityBot.Handlers;
 using Microsoft.Extensions.DependencyInjection;
 using CommunityBot.Features;
-using CommunityBot.Features.Trivia;
 using Discord.Commands;
 using CommunityBot.Features.Lists;
 using CommunityBot.Features.Onboarding;
@@ -55,7 +54,6 @@ namespace CommunityBot
             // BotSettings and ApplicationSettings are created once they are first requested, not before
 
             serviceCollection.AddSingleton<Logger>();
-            serviceCollection.AddSingleton<TriviaGames>();
             serviceCollection.AddSingleton<DiscordEventHandler>();
             serviceCollection.AddSingleton<CommandHandler>();
             serviceCollection.AddSingleton<CommandService>();

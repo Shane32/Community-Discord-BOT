@@ -7,7 +7,6 @@ using CommunityBot.Features;
 using CommunityBot.Features.GlobalAccounts;
 using CommunityBot.Features.Lists;
 using CommunityBot.Features.Onboarding;
-using CommunityBot.Features.Trivia;
 using CommunityBot.Helpers;
 using CommunityBot.Modules;
 using Discord;
@@ -27,7 +26,6 @@ namespace CommunityBot.Handlers
         private readonly CommandHandler _commandHandler;
         private readonly ApplicationSettings _applicationSettings;
         private readonly Logger _logger;
-        private readonly TriviaGames _triviaGames;
         private readonly ListManager _listManager;
         private readonly IOnboarding _onboarding;
         private readonly Announcements _announcements;
@@ -35,13 +33,12 @@ namespace CommunityBot.Handlers
         private readonly RepeatedTaskFunctions _repeatedTaskFunctions;
         private readonly GlobalGuildAccounts _globalGuildAccounts;
 
-        public DiscordEventHandler(Logger logger, TriviaGames triviaGames, DiscordSocketClient client, CommandHandler commandHandler, ApplicationSettings applicationSettings, ListManager listManager, IOnboarding onboarding, Announcements announcements, MessageRewardHandler messageRewardHandler, RepeatedTaskFunctions repeatedTaskFunctions, GlobalGuildAccounts globalGuildAccounts)
+        public DiscordEventHandler(Logger logger, DiscordSocketClient client, CommandHandler commandHandler, ApplicationSettings applicationSettings, ListManager listManager, IOnboarding onboarding, Announcements announcements, MessageRewardHandler messageRewardHandler, RepeatedTaskFunctions repeatedTaskFunctions, GlobalGuildAccounts globalGuildAccounts)
         {
             _logger = logger;
             _client = client;
             _commandHandler = commandHandler;
             _applicationSettings = applicationSettings;
-            _triviaGames = triviaGames;
             _listManager = listManager;
             _onboarding = onboarding;
             _announcements = announcements;
@@ -208,7 +205,6 @@ namespace CommunityBot.Handlers
             var roleIds = user.Roles.Select(r => r.Id).ToArray();
             (new ListReactionHandler()).HandleReactionAdded(new ListHelper.UserInfo(user.Id, roleIds), _listManager, cacheMessage, reaction);
 
-            _triviaGames.HandleReactionAdded(cacheMessage, reaction);
         }
 
         private async Task ReactionRemoved(Cacheable<IUserMessage, ulong> cacheMessage, ISocketMessageChannel channel, SocketReaction reaction)
