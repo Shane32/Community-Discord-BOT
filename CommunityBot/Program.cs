@@ -34,16 +34,22 @@ namespace CommunityBot
 
             BlackBox.Initialize();
 
-            _client = _serviceProvider.GetRequiredService<DiscordSocketClient>();
+            using (_client = _serviceProvider.GetRequiredService<DiscordSocketClient>())
+            {
+                _serviceProvider.GetRequiredService<DiscordEventHandler>().InitDiscordEvents();
+                await _serviceProvider.GetRequiredService<CommandHandler>().InitializeAsync();
 
-            _serviceProvider.GetRequiredService<DiscordEventHandler>().InitDiscordEvents();
-            await _serviceProvider.GetRequiredService<CommandHandler>().InitializeAsync();
+                while (!await AttemptLogin()) { }
 
-            while (!await AttemptLogin()) { }
+                await _client.StartAsync();
 
-            await _client.StartAsync();
+                do
+                {
+                    Console.WriteLine("Press Q to exit");
+                }
+                while (Console.ReadKey(true).Key != ConsoleKey.Q);
+            }
 
-            await Task.Delay(-1);
         }
 
         private static void ConfigureServices(IServiceCollection serviceCollection, string[] args)
