@@ -13,6 +13,12 @@ namespace CommunityBot.Modules
     [Summary("Allows access to pending and archived invite links to bots. This allows for you to submit your invite links for bots so that the guild's managers can add them.")]
     public class ServerBots : ModuleBase<MiunieCommandContext>
     {
+        private readonly GlobalGuildAccounts _globalGuildAccounts;
+        public ServerBots(GlobalGuildAccounts globalGuildAccounts)
+        {
+            _globalGuildAccounts = globalGuildAccounts;
+        }
+
         [Serializable]
         public class AllGuildsData
         {
@@ -91,13 +97,13 @@ namespace CommunityBot.Modules
         const string LINK_TEMPLATE_LAST = "&scope=bot&permissions=1";
         const int SUBMISSIONS_PER_PAGE = 4;
 
-        public static Task Init()
+        public static Task Init(GlobalGuildAccounts globalGuildAccounts)
         {
             data = new AllGuildsData();
 
             foreach (SocketGuild guild in Global.Client.Guilds)
             {
-                GuildData savedData = GlobalGuildAccounts.GetGuildAccount(guild.Id).BotData;
+                GuildData savedData = globalGuildAccounts.GetGuildAccount(guild.Id).BotData;
                 if (savedData == null)
                 {
                     AddGuild(guild.Id);
@@ -106,7 +112,7 @@ namespace CommunityBot.Modules
                 {
                     data.guilds.Add(savedData);
                 }
-                StoreData(guild.Id);
+                StoreData(guild.Id, globalGuildAccounts);
             }
 
             return Task.CompletedTask;
@@ -162,10 +168,15 @@ namespace CommunityBot.Modules
             }
         }
 
-        static void StoreData(ulong id)
+        private void StoreData(ulong id)
         {
-            var guildAccount = GlobalGuildAccounts.GetGuildAccount(id);
-            guildAccount.Modify(g => g.SetBotData(data.GetGuild(id)));
+            StoreData(id, _globalGuildAccounts);
+        }
+
+        private static void StoreData(ulong id, GlobalGuildAccounts globalGuildAccounts)
+        {
+            var guildAccount = globalGuildAccounts.GetGuildAccount(id);
+            guildAccount.Modify(g => g.SetBotData(data.GetGuild(id)), globalGuildAccounts);
         }
 
         [Command("add")]

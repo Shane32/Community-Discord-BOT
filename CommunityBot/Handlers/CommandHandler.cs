@@ -15,12 +15,18 @@ namespace CommunityBot.Handlers
         private readonly DiscordSocketClient _client;
         private readonly CommandService _cmdService;
         private readonly IServiceProvider _serviceProvider;
+        private readonly GlobalGuildAccounts _globalGuildAccounts;
+        private readonly GlobalUserAccounts _globalUserAccounts;
+        private readonly RoleByPhraseProvider _roleByPhraseProvider;
 
-        public CommandHandler(DiscordSocketClient client, CommandService cmdService, IServiceProvider serviceProvider)
+        public CommandHandler(DiscordSocketClient client, CommandService cmdService, IServiceProvider serviceProvider, GlobalGuildAccounts globalGuildAccounts, GlobalUserAccounts globalUserAccounts, RoleByPhraseProvider roleByPhraseProvider)
         {
             _client = client;
             _cmdService = cmdService;
             _serviceProvider = serviceProvider;
+            _globalGuildAccounts = globalGuildAccounts;
+            _globalUserAccounts = globalUserAccounts;
+            _roleByPhraseProvider = roleByPhraseProvider;
         }
 
         public async Task InitializeAsync()
@@ -34,9 +40,9 @@ namespace CommunityBot.Handlers
             if (!(s is SocketUserMessage msg)) { return; }
             if (msg.Channel is SocketDMChannel) { return; }
             if (msg.Author.IsBot) { return; }
-            var context = new MiunieCommandContext(_client, msg);
+            var context = new MiunieCommandContext(_client, msg, _globalUserAccounts);
 
-            await RoleByPhraseProvider.EvaluateMessage(
+            await _roleByPhraseProvider.EvaluateMessage(
                 context.Guild,
                 context.Message.Content,
                 (SocketGuildUser) context.User
@@ -64,10 +70,10 @@ namespace CommunityBot.Handlers
             }
         }
 
-        private static bool CheckPrefix(ref int argPos, SocketCommandContext context)
+        private bool CheckPrefix(ref int argPos, SocketCommandContext context)
         {
             if (context.Guild is null) return false;
-            var prefixes = GlobalGuildAccounts.GetGuildAccount(context.Guild.Id).Prefixes;
+            var prefixes = _globalGuildAccounts.GetGuildAccount(context.Guild.Id).Prefixes;
             var tmpArgPos = 0;
             var success = prefixes.Any(pre =>
             {

@@ -11,16 +11,22 @@ namespace CommunityBot.Modules
     [RequireContext(ContextType.Guild)]
     public class Prefix : ModuleBase<MiunieCommandContext>
     {
+        private readonly GlobalGuildAccounts _globalGuildAccounts;
+        public Prefix(GlobalGuildAccounts globalGuildAccounts)
+        {
+            _globalGuildAccounts = globalGuildAccounts;
+        }
+
         [Command("add"), Alias("set"), RequireUserPermission(GuildPermission.Administrator)]
         [Remarks("Adds a prefix to the list of prefixes")]
         public async Task AddPrefix([Remainder] string prefix)
         {
-            var guildAcc = GlobalGuildAccounts.GetGuildAccount(Context.Guild.Id);
+            var guildAcc = _globalGuildAccounts.GetGuildAccount(Context.Guild.Id);
             var response = $"Failed to add the Prefix... Was `{prefix}` already a prefix?";
             if (!guildAcc.Prefixes.Contains(prefix))
             {
                 var prefixes = guildAcc.Prefixes.ToList();
-                guildAcc.Modify(g => g.SetPrefixes(prefixes.Append(prefix).ToList()));
+                guildAcc.Modify(g => g.SetPrefixes(prefixes.Append(prefix).ToList()), _globalGuildAccounts);
                 response =  $"Successfully added `{prefix}` as prefix!";
             }
 
@@ -31,13 +37,13 @@ namespace CommunityBot.Modules
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task RemovePrefix([Remainder] string prefix)
         {
-            var guildAcc = GlobalGuildAccounts.GetGuildAccount(Context.Guild.Id);
+            var guildAcc = _globalGuildAccounts.GetGuildAccount(Context.Guild.Id);
             var response = $"Failed to remove the Prefix... Was `{prefix}` really a prefix?";
             if (guildAcc.Prefixes.Contains(prefix))
             {
                 var prefixes = guildAcc.Prefixes.ToList();
                 prefixes.Remove(prefix);
-                guildAcc.Modify(g => g.SetPrefixes(prefixes));
+                guildAcc.Modify(g => g.SetPrefixes(prefixes), _globalGuildAccounts);
                 response =  $"Successfully removed `{prefix}` as possible prefix!";
             }
 
@@ -47,7 +53,7 @@ namespace CommunityBot.Modules
         [Command("list"), Remarks("Show all possible prefixes for this server")]
         public async Task ListPrefixes()
         {
-            var prefixes = GlobalGuildAccounts.GetGuildAccount(Context.Guild.Id).Prefixes;
+            var prefixes = _globalGuildAccounts.GetGuildAccount(Context.Guild.Id).Prefixes;
             var response = "No Prefix set yet... just mention me to use commands!";
             if (prefixes.Count != 0) response = "Usable Prefixes are:\n`" + string.Join("`, `", prefixes) + "`\nOr just mention me! :grin:";
             await ReplyAsync(response);

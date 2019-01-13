@@ -8,12 +8,15 @@ namespace CommunityBot.Extensions
     public class MiunieCommandContext : SocketCommandContext
     {
         public GlobalUserAccount UserAccount { get; }
+        private GlobalUserAccounts _globalUserAccounts;
         
-        public MiunieCommandContext(DiscordSocketClient client, SocketUserMessage msg) : base(client, msg)
+        public MiunieCommandContext(DiscordSocketClient client, SocketUserMessage msg, GlobalUserAccounts globalUserAccounts) : base(client, msg)
         {
+            this._globalUserAccounts = globalUserAccounts;
+
             if (User is null) { return; }
 
-            UserAccount = GlobalUserAccounts.GetUserAccount(User);
+            UserAccount = globalUserAccounts.GetUserAccount(User);
         }
 
         public void RegisterCommandUsage()
@@ -22,7 +25,7 @@ namespace CommunityBot.Extensions
             
             UserAccount.AddCommandToHistory(commandUsedInformation);
 
-            GlobalUserAccounts.SaveAccounts(UserAccount.Id);
+            _globalUserAccounts.SaveAccounts(UserAccount.Id);
         }
     }
 }

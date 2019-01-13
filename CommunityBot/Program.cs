@@ -7,6 +7,16 @@ using CommunityBot.Configuration;
 using CommunityBot.Handlers;
 using Microsoft.Extensions.DependencyInjection;
 using CommunityBot.Features;
+using CommunityBot.Features.Trivia;
+using Discord.Commands;
+using CommunityBot.Features.Lists;
+using CommunityBot.Features.Onboarding;
+using CommunityBot.Features.GlobalAccounts;
+using CommunityBot.DiscordAbstractions;
+using CommunityBot.Features.Economy;
+using CommunityBot.Features.Onboarding.Tasks;
+using CommunityBot.Providers;
+using CommunityBot.Helpers;
 
 namespace CommunityBot
 {
@@ -18,31 +28,70 @@ namespace CommunityBot
 
         private static async Task Main(string[] args)
         {
-            _appSettings = new ApplicationSettings(args);
-            
+            IServiceCollection serviceCollection = new ServiceCollection();
+            ConfigureServices(serviceCollection, args);
+            _serviceProvider = serviceCollection.BuildServiceProvider();
+
             BlackBox.Initialize();
 
-            InversionOfControl.InitializeContainer(_appSettings);
-
-            _client = InversionOfControl.Container.GetInstance<DiscordSocketClient>();
-
-            _serviceProvider = InversionOfControl.Container;
+            _client = _serviceProvider.GetRequiredService<DiscordSocketClient>();
 
             _serviceProvider.GetRequiredService<DiscordEventHandler>().InitDiscordEvents();
             await _serviceProvider.GetRequiredService<CommandHandler>().InitializeAsync();
 
-            while (!await AttemptLogin()){}
+            while (!await AttemptLogin()) { }
 
             await _client.StartAsync();
 
             await Task.Delay(-1);
         }
 
+        private static void ConfigureServices(IServiceCollection serviceCollection, string[] args)
+        {
+            // no objects are created within this function; nor are any initializers executed
+            // BotSettings and ApplicationSettings are created once they are first requested, not before
+
+            serviceCollection.AddSingleton<Logger>();
+            serviceCollection.AddSingleton<TriviaGames>();
+            serviceCollection.AddSingleton<DiscordEventHandler>();
+            serviceCollection.AddSingleton<CommandHandler>();
+            serviceCollection.AddSingleton<CommandService>();
+            serviceCollection.AddSingleton<ApplicationSettings>((s) =>
+            {
+                BotSettings botSettings = s.GetRequiredService<BotSettings>();
+                return new ApplicationSettings(args, botSettings);
+            });
+            serviceCollection.AddSingleton<DiscordSocketClient>((s) =>
+            {
+                ApplicationSettings appSettings = s.GetRequiredService<ApplicationSettings>();
+                return DiscordClientFactory.GetBySettings(appSettings);
+            });
+            serviceCollection.AddSingleton<IDataStorage, JsonDataStorage>();
+            serviceCollection.AddSingleton<ListManager>();
+            serviceCollection.AddSingleton<IOnboarding, Onboarding>();
+            serviceCollection.AddSingleton<HelloWorldTask>();
+            serviceCollection.AddSingleton<IGlobalUserAccountProvider, GlobalUserAccountProvider>(); //todo: delete
+            serviceCollection.AddSingleton<IDiscordSocketClient, DiscordSocketClientAbstraction>();
+            serviceCollection.AddSingleton<IDailyMiunies, Daily>();
+            serviceCollection.AddSingleton<IMiuniesTransfer, Transfer>();
+
+            serviceCollection.AddSingleton<BlogHandler>();
+            serviceCollection.AddSingleton<GlobalGuildAccounts>();
+            serviceCollection.AddSingleton<GlobalUserAccounts>();
+            serviceCollection.AddSingleton<Announcements>();
+            serviceCollection.AddSingleton<RoleByPhraseProvider>();
+            serviceCollection.AddSingleton<MessageRewardHandler>();
+            serviceCollection.AddSingleton<RepeatedTaskFunctions>();
+            serviceCollection.AddSingleton<BotSettings>();
+            serviceCollection.AddSingleton<JsonDataStorage>();
+        }
+
         private static async Task<bool> AttemptLogin()
         {
+            BotSettings botSettings = _serviceProvider.GetRequiredService<BotSettings>();
             try
             {
-                await _client.LoginAsync(TokenType.Bot, BotSettings.config.Token);
+                await _client.LoginAsync(TokenType.Bot, botSettings.config.Token);
                 return true;
             }
             catch (HttpRequestException e)
@@ -67,7 +116,7 @@ namespace CommunityBot
 
                 var shouldTryAgain = GetTryAgainRequested();
                 if (!shouldTryAgain) Environment.Exit(0);
-                BotSettings.LoadConfig();
+                botSettings.LoadConfig();
                 return false;
             }
         }

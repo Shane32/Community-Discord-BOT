@@ -11,12 +11,19 @@ namespace CommunityBot.Modules
     [RequireUserPermission(GuildPermission.Administrator)]
     public class Announcement : ModuleBase<MiunieCommandContext>
     {
+        private readonly GlobalGuildAccounts _globalGuildAccounts;
+
+        public Announcement(GlobalGuildAccounts globalGuildAccounts)
+        {
+            _globalGuildAccounts = globalGuildAccounts;
+        }
+
         [Command("SetChannel"), Alias("Set"), RequireUserPermission(GuildPermission.Administrator)]
         [Remarks("Sets the channel where to post announcements")]
         public async Task SetAnnouncementChannel(ITextChannel channel)
         {
-            var guildAcc = GlobalGuildAccounts.GetGuildAccount(Context.Guild.Id);
-            guildAcc.Modify(g => g.SetAnnouncementChannelId(channel.Id));
+            var guildAcc = _globalGuildAccounts.GetGuildAccount(Context.Guild.Id);
+            guildAcc.Modify(g => g.SetAnnouncementChannelId(channel.Id), _globalGuildAccounts);
             await ReplyAsync("The Announcement-Channel has been set to " + channel.Mention);
         }
 
@@ -24,8 +31,8 @@ namespace CommunityBot.Modules
         [Remarks("Turns posting announcements to a channel off")]
         public async Task UnsetAnnouncementChannel()
         {
-            var guildAcc = GlobalGuildAccounts.GetGuildAccount(Context.Guild.Id);
-            guildAcc.Modify(g => g.SetAnnouncementChannelId(0));
+            var guildAcc = _globalGuildAccounts.GetGuildAccount(Context.Guild.Id);
+            guildAcc.Modify(g => g.SetAnnouncementChannelId(0), _globalGuildAccounts);
             await ReplyAsync("Now there is no Announcement-Channel anymore! No more Announcements from now on... RIP!");
         }
     }
@@ -33,6 +40,12 @@ namespace CommunityBot.Modules
     [Summary("DM a joining user a random message out of the ones defined.")]
     public class WelcomeMessages : ModuleBase<MiunieCommandContext>
     {
+        private readonly GlobalGuildAccounts _globalGuildAccounts;
+
+        public WelcomeMessages(GlobalGuildAccounts globalGuildAccounts)
+        {
+            _globalGuildAccounts = globalGuildAccounts;
+        }
         [Command("add"), RequireUserPermission(GuildPermission.Administrator)]
         [Remarks("Example: `welcome add <usermention>, welcome to **<guildname>**! " +
                  "Try using ```@<botname>#<botdiscriminator> help``` for all the commands of <botmention>!`\n" +
@@ -40,13 +53,13 @@ namespace CommunityBot.Modules
                  "`<botname>`, `<botdiscriminator>`, `<botmention>` ")]
         public async Task AddWelcomeMessage([Remainder] string message)
         {
-            var guildAcc = GlobalGuildAccounts.GetGuildAccount(Context.Guild.Id);
+            var guildAcc = _globalGuildAccounts.GetGuildAccount(Context.Guild.Id);
             var response = $"Failed to add this Welcome Message...";
             if (!guildAcc.WelcomeMessages.Contains(message))
             {
                 var messages = guildAcc.WelcomeMessages.ToList();
                 messages.Add(message);
-                guildAcc.Modify(g => g.SetWelcomeMessages(messages));
+                guildAcc.Modify(g => g.SetWelcomeMessages(messages), _globalGuildAccounts);
                 response =  $"Successfully added ```\n{message}\n``` as Welcome Message!";
             }
 
@@ -57,13 +70,13 @@ namespace CommunityBot.Modules
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task RemoveWelcomeMessage(int messageIndex)
         {
-            var guildAcc = GlobalGuildAccounts.GetGuildAccount(Context.Guild.Id);
+            var guildAcc = _globalGuildAccounts.GetGuildAccount(Context.Guild.Id);
             var messages = guildAcc.WelcomeMessages.ToList();
             var response = $"Failed to remove this Welcome Message... Use the number shown in `welcome list` next to the `#` sign!";
             if (messages.Count > messageIndex - 1)
             {
                 messages.RemoveAt(messageIndex - 1);
-                guildAcc.Modify(g => g.SetWelcomeMessages(messages));
+                guildAcc.Modify(g => g.SetWelcomeMessages(messages), _globalGuildAccounts);
                 response =  $"Successfully removed message #{messageIndex} as possible Welcome Message!";
             }
 
@@ -74,7 +87,7 @@ namespace CommunityBot.Modules
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task ListWelcomeMessages()
         {
-            var welcomeMessages = GlobalGuildAccounts.GetGuildAccount(Context.Guild.Id).WelcomeMessages;
+            var welcomeMessages = _globalGuildAccounts.GetGuildAccount(Context.Guild.Id).WelcomeMessages;
             var embB = new EmbedBuilder().WithTitle("No Welcome Messages set yet... add some if you want to greet incoming people! =)");
             if (welcomeMessages.Count > 0) embB.WithTitle("Possible Welcome Messages:");
 
@@ -92,19 +105,26 @@ namespace CommunityBot.Modules
     ]
     public class LeaveMessages : ModuleBase<MiunieCommandContext>
     {
+        private readonly GlobalGuildAccounts _globalGuildAccounts;
+
+        public LeaveMessages(GlobalGuildAccounts globalGuildAccounts)
+        {
+            _globalGuildAccounts = globalGuildAccounts;
+        }
+
         [Command("add"), RequireUserPermission(GuildPermission.Administrator)]
         [Remarks("Example: `leave add Oh noo! <usermention>, left <guildname>...`\n" +
                  "Possible placeholders are: `<usermention>`, `<username>`, `<guildname>`, " +
                  "`<botname>`, `<botdiscriminator>`, `<botmention>`")]
         public async Task AddLeaveMessage([Remainder] string message)
         {
-            var guildAcc = GlobalGuildAccounts.GetGuildAccount(Context.Guild.Id);
+            var guildAcc = _globalGuildAccounts.GetGuildAccount(Context.Guild.Id);
             var response = $"Failed to add this Leave Message...";
             if (!guildAcc.LeaveMessages.Contains(message))
             {
                 var messages = guildAcc.WelcomeMessages.ToList();
                 messages.Add(message);
-                guildAcc.Modify(g => g.SetLeaveMessages(messages));
+                guildAcc.Modify(g => g.SetLeaveMessages(messages), _globalGuildAccounts);
                 response =  $"Successfully added `{message}` as Leave Message!";
             }
 
@@ -115,13 +135,13 @@ namespace CommunityBot.Modules
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task RemoveLeaveMessage(int messageIndex)
         {
-            var guildAcc= GlobalGuildAccounts.GetGuildAccount(Context.Guild.Id);
+            var guildAcc = _globalGuildAccounts.GetGuildAccount(Context.Guild.Id);
             var messages = guildAcc.LeaveMessages.ToList();
             var response = $"Failed to remove this Leave Message... Use the number shown in `leave list` next to the `#` sign!";
             if (messages.Count > messageIndex - 1)
             {
                 messages.RemoveAt(messageIndex - 1);
-                guildAcc.Modify(g => g.SetLeaveMessages(messages));
+                guildAcc.Modify(g => g.SetLeaveMessages(messages), _globalGuildAccounts);
                 response =  $"Successfully removed message #{messageIndex} as possible Welcome Message!";
             }
 
@@ -132,7 +152,7 @@ namespace CommunityBot.Modules
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task ListLeaveMessages()
         {
-            var leaveMessages = GlobalGuildAccounts.GetGuildAccount(Context.Guild.Id).LeaveMessages;
+            var leaveMessages = _globalGuildAccounts.GetGuildAccount(Context.Guild.Id).LeaveMessages;
             var embB = new EmbedBuilder().WithTitle("No Leave Messages set yet... add some if you want a message to be shown if someone leaves.");
             if (leaveMessages.Count > 0) embB.WithTitle("Possible Leave Messages:");
 

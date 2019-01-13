@@ -45,6 +45,13 @@ namespace CommunityBot.Modules
     [Summary("Tell the bot to remind you in some amount of time. The bot will send you a DM with the text you specified.")]
     public class Reminder : ModuleBase<MiunieCommandContext>
     {
+        private readonly GlobalUserAccounts _globalUserAccounts;
+
+        public Reminder(GlobalUserAccounts globalUserAccounts)
+        {
+            _globalUserAccounts = globalUserAccounts;
+        }
+
         [Command(""), Alias("New", "Add"), Priority(0), Remarks("Add a reminder")]
         public async Task AddReminder([Remainder] string args)
         {
@@ -69,10 +76,10 @@ namespace CommunityBot.Modules
 
             var newReminder = new ReminderEntry(timeDateTime, reminderString);
 
-            var account = GlobalUserAccounts.GetUserAccount(Context.User.Id);
+            var account = _globalUserAccounts.GetUserAccount(Context.User.Id);
 
             account.Reminders.Add(newReminder);
-            GlobalUserAccounts.SaveAccounts(Context.User.Id);
+            _globalUserAccounts.SaveAccounts(Context.User.Id);
 
 
             var timezone = account.TimeZone ?? "UTC";
@@ -123,7 +130,7 @@ namespace CommunityBot.Modules
                 return;
             }
 
-            var account = GlobalUserAccounts.GetUserAccount(Context.User.Id);
+            var account = _globalUserAccounts.GetUserAccount(Context.User.Id);
             var timezone = account.TimeZone ?? "UTC";
             var tz = TimeZoneInfo.FindSystemTimeZoneById($"{timezone}");
             var timeString = splittedArgs[splittedArgs.Length - 1];
@@ -136,7 +143,7 @@ namespace CommunityBot.Modules
             var newReminder = new ReminderEntry(timeDateTime, reminderString);
 
             account.Reminders.Add(newReminder);
-            GlobalUserAccounts.SaveAccounts(Context.User.Id);
+            _globalUserAccounts.SaveAccounts(Context.User.Id);
 
             var bigmess2 =
                 $"{reminderString}\n\n" +
@@ -156,7 +163,7 @@ namespace CommunityBot.Modules
         [Command("List"), Priority(2), Remarks("List all your reminders")]
         public async Task ShowReminders()
         {
-            var reminders = GlobalUserAccounts.GetUserAccount(Context.User.Id).Reminders;
+            var reminders = _globalUserAccounts.GetUserAccount(Context.User.Id).Reminders;
             var embB = new EmbedBuilder()
                 .WithTitle("Your Reminders (Times are in UTC / GMT+0)")
                 .WithFooter("Did you know? " + Global.GetRandomDidYouKnow())
@@ -174,13 +181,13 @@ namespace CommunityBot.Modules
         [Command("Delete"), Priority(2), Remarks("Delete one of your reminders")]
         public async Task DeleteReminder(int index)
         {
-            var reminders = GlobalUserAccounts.GetUserAccount(Context.User.Id).Reminders;
+            var reminders = _globalUserAccounts.GetUserAccount(Context.User.Id).Reminders;
             var responseString = "Duhh... maybe use `remind list` before you try to " +
                                  "delete a reminder that doesn't even exists?!";
             if (index > 0 && index <= reminders.Count)
             {
                 reminders.RemoveAt(index - 1);
-                GlobalUserAccounts.SaveAccounts(Context.User.Id);
+                _globalUserAccounts.SaveAccounts(Context.User.Id);
                 responseString = $"Deleted the reminder with index {index}!";
             }
 

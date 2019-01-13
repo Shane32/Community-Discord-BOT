@@ -12,7 +12,7 @@ using CommunityBot.Features.GlobalAccounts;
 
 namespace CommunityBot
 {
-    public static class InversionOfControl
+    public static class InversionOfControlols
     {
         private static Container container;
 

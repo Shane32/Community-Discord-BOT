@@ -4,13 +4,20 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
 using CommunityBot.Entities;
+using CommunityBot.Features.GlobalAccounts;
 using Discord.WebSocket;
 
 namespace CommunityBot.Helpers
 {
-    internal class RepeatedTaskFunctions
+    public class RepeatedTaskFunctions
     {
-        internal static Task InitRepeatedTasks()
+        private readonly GlobalUserAccounts _globalUserAccounts;
+        public RepeatedTaskFunctions(GlobalUserAccounts globalUserAccounts)
+        {
+            _globalUserAccounts = globalUserAccounts;
+        }
+
+        public Task InitRepeatedTasks()
         {
             // Look for expired reminders every 3 seconds
             Global.TaskHander.AddRepeatedTask("Reminders", 3000, new ElapsedEventHandler(CheckReminders));
@@ -25,11 +32,11 @@ namespace CommunityBot.Helpers
             general?.SendMessageAsync("If you have any problems with your code, please follow the instructions in <#406360393489973248>!");
         }
 
-        private static async void CheckReminders(object sender, ElapsedEventArgs e)
+        private async void CheckReminders(object sender, ElapsedEventArgs e)
         {
             var now = DateTime.UtcNow;
             // Get all accounts that have at least one reminder that needs to be sent out
-            var accounts = Features.GlobalAccounts.GlobalUserAccounts.GetFilteredAccounts(acc => acc.Reminders.Any(rem => rem.DueDate < now));
+            var accounts = _globalUserAccounts.GetFilteredAccounts(acc => acc.Reminders.Any(rem => rem.DueDate < now));
             foreach (var account in accounts)
             {
                 var guildUser = Global.Client.GetUser(account.Id);
@@ -48,7 +55,7 @@ namespace CommunityBot.Helpers
                 }
                 // Remove all elements that needs to be removed
                 toBeRemoved.ForEach(remRem => account.Reminders.Remove(remRem));
-                Features.GlobalAccounts.GlobalUserAccounts.SaveAccounts(account.Id);
+                _globalUserAccounts.SaveAccounts(account.Id);
             }
         }
     }

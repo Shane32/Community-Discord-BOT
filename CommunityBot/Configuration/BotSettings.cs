@@ -4,23 +4,24 @@ using CommunityBot.Helpers;
 
 namespace CommunityBot.Configuration
 {
-    internal static class BotSettings
+    public class BotSettings
     {
-        internal static BotConfig config;
+        internal BotConfig config;
 
-        private static readonly string configFile = "config.json";
+        private readonly string configFile = "config.json";
+        private readonly JsonDataStorage jsonDataStorage;
 
-        static BotSettings()
+        public BotSettings(JsonDataStorage jsonDataStorage)
         {
+            this.jsonDataStorage = jsonDataStorage;
             LoadConfig();
         }
 
-        internal static void LoadConfig()
+        internal void LoadConfig()
         {
-            var dataStorage = InversionOfControl.Container.GetInstance<JsonDataStorage>();
-            if (dataStorage.LocalFileExists(configFile))
+            if (jsonDataStorage.LocalFileExists(configFile))
             {
-                config = dataStorage.RestoreObject<BotConfig>(configFile);
+                config = jsonDataStorage.RestoreObject<BotConfig>(configFile);
             }
             else
             {
@@ -30,11 +31,11 @@ namespace CommunityBot.Configuration
                     Prefix = "$",
                     Token = "YOUR-TOKEN-HERE"
                 };
-                dataStorage.StoreObject(config, configFile, useIndentations: true);
+                jsonDataStorage.StoreObject(config, configFile, useIndentations: true);
             }
         }
 
-        public static ActionResult SetCommandPrefix(string prefix)
+        public ActionResult SetCommandPrefix(string prefix)
         {
             var result = new ActionResult();
             
@@ -47,13 +48,13 @@ namespace CommunityBot.Configuration
             return result;
         }
 
-        private static ActionResult SaveSettings()
+        private ActionResult SaveSettings()
         {
             var result = new ActionResult();
             
             try
             {
-                InversionOfControl.Container.GetInstance<JsonDataStorage>().StoreObject(config, configFile);
+                jsonDataStorage.StoreObject(config, configFile);
             }
             catch (Exception)
             {

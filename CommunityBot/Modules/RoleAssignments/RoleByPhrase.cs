@@ -13,11 +13,19 @@ namespace CommunityBot.Modules.RoleAssignments
     [RequireUserPermission(GuildPermission.Administrator)]
     public class RoleByPhrase : ModuleBase<MiunieCommandContext>
     {
+        private readonly RoleByPhraseProvider _roleByPhraseProvider;
+        private readonly GlobalGuildAccounts _globalGuildAccounts;
+        public RoleByPhrase (GlobalGuildAccounts globalGuildAccounts, RoleByPhraseProvider roleByPhraseProvider)
+        {
+            _globalGuildAccounts = globalGuildAccounts;
+            _roleByPhraseProvider = roleByPhraseProvider;
+        }
+
         [Command("status"), Alias("s"), RequireUserPermission(GuildPermission.Administrator)]
         [Remarks("Returns the current state of RoleByPhrase lists and relations.")]
         public async Task RbpStatus()
         {
-            var rbp = GlobalGuildAccounts.GetGuildAccount(Context.Guild).RoleByPhraseSettings;
+            var rbp = _globalGuildAccounts.GetGuildAccount(Context.Guild).RoleByPhraseSettings;
 
             var phrases = rbp.Phrases.Any() ? string.Join("\n", rbp.Phrases.Select(p => $"({rbp.Phrases.IndexOf(p)}) - {p}")) : "No phrases stored\nAdd one with `rbp addPhrase YOUR-PHRASE`";
             var roles = rbp.RolesIds.Any() ? string.Join("\n", rbp.RolesIds.Select(r => $"({rbp.RolesIds.IndexOf(r)}) - {Context.Guild.GetRole(r).Name}")) : "No roles stored\nAdd one with `rbp addRole @SomeRole`";
@@ -39,7 +47,7 @@ namespace CommunityBot.Modules.RoleAssignments
         [Remarks("Adds a new phrase to the guild's settings. (Phrase is a Remainder, so no double quotes are needed)")]
         public async Task RbpAddPhrase([Remainder]string phrase)
         {
-            var result = RoleByPhraseProvider.AddPhrase(Context.Guild, phrase);
+            var result = _roleByPhraseProvider.AddPhrase(Context.Guild, phrase);
 
             if (result == RoleByPhraseProvider.RoleByPhraseOperationResult.Success)
             {
@@ -56,7 +64,7 @@ namespace CommunityBot.Modules.RoleAssignments
         [Remarks("Adds a new phrase to the guild's settings. (Phrase is a Remainder, so no double quotes are needed)")]
         public async Task RbpAddRole(IRole role)
         {
-            var result = RoleByPhraseProvider.AddRole(Context.Guild, role);
+            var result = _roleByPhraseProvider.AddRole(Context.Guild, role);
 
             if (result == RoleByPhraseProvider.RoleByPhraseOperationResult.Success)
             {
@@ -73,7 +81,7 @@ namespace CommunityBot.Modules.RoleAssignments
         [Remarks("Adds a new relation between a phrase and a role. Relation are automatically enabled and used after you add them.")]
         public async Task RbpAddRelation(int phraseIndex, int roleIndex)
         {
-            var result = RoleByPhraseProvider.CreateRelation(Context.Guild, phraseIndex, roleIndex);
+            var result = _roleByPhraseProvider.CreateRelation(Context.Guild, phraseIndex, roleIndex);
 
             if (result == RoleByPhraseProvider.RelationCreationResult.Success)
             {
@@ -90,7 +98,7 @@ namespace CommunityBot.Modules.RoleAssignments
         [Remarks("Removes a relation between a phrase and a role.")]
         public async Task RbpRemoveRelation(int phraseIndex, int roleIndex)
         {
-            RoleByPhraseProvider.RemoveRelation(Context.Guild, phraseIndex, roleIndex);
+            _roleByPhraseProvider.RemoveRelation(Context.Guild, phraseIndex, roleIndex);
             await RbpStatus();
         }
 
@@ -98,7 +106,7 @@ namespace CommunityBot.Modules.RoleAssignments
         [Remarks("Removes a phrase and its relations.")]
         public async Task RbpRemovePhrase(int phraseIndex)
         {
-            RoleByPhraseProvider.RemovePhrase(Context.Guild, phraseIndex);
+            _roleByPhraseProvider.RemovePhrase(Context.Guild, phraseIndex);
             await RbpStatus();
         }
 
@@ -106,7 +114,7 @@ namespace CommunityBot.Modules.RoleAssignments
         [Remarks("Removes a role and its relations.")]
         public async Task RbpRemoveRole(int roleIndex)
         {
-            RoleByPhraseProvider.RemoveRole(Context.Guild, roleIndex);
+            _roleByPhraseProvider.RemoveRole(Context.Guild, roleIndex);
             await RbpStatus();
         }
     }

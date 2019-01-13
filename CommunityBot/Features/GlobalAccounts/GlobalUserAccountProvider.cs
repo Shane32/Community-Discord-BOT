@@ -15,14 +15,21 @@ namespace CommunityBot.Features.GlobalAccounts
         // I hid the static class behind this interface/class pair to be able to mock it
         // inside unit tests.
 
+        private readonly GlobalUserAccounts _globalUserAccounts;
+
+        public GlobalUserAccountProvider(GlobalUserAccounts globalUserAccounts)
+        {
+            _globalUserAccounts = globalUserAccounts;
+        }
+
         public GlobalUserAccount GetById(ulong userId)
         {
-            return GlobalUserAccounts.GetUserAccount(userId);
+            return _globalUserAccounts.GetUserAccount(userId);
         }
 
         public void SaveByIds(params ulong[] userIds)
         {
-            GlobalUserAccounts.SaveAccounts(userIds);
+            _globalUserAccounts.SaveAccounts(userIds);
         }
     }
 }

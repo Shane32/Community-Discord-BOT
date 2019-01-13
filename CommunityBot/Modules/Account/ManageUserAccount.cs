@@ -14,12 +14,18 @@ namespace CommunityBot.Modules.Account
     [Group("account")]
     public class ManageUserAccount : ModuleBase<MiunieCommandContext>
     {
+        private GlobalUserAccounts _globalUserAccounts;
+        public ManageUserAccount (GlobalUserAccounts globalUserAccounts)
+        {
+            _globalUserAccounts = globalUserAccounts;
+        }
+
         [Command("info")]
         public async Task AccountInformation(SocketGuildUser user = null)
         {
             user = user ?? (SocketGuildUser) Context.User;
 
-            var userAccount = GlobalUserAccounts.GetUserAccount(user);
+            var userAccount = _globalUserAccounts.GetUserAccount(user);
             
             var embed = new EmbedBuilder()
                 .WithAuthor($"{user.Username}'s account information", user.GetAvatarUrl())
@@ -54,7 +60,7 @@ namespace CommunityBot.Modules.Account
         [Command("GetAllMyAccountData"), Alias("GetMyData", "MyData")]
         public async Task GetAccountFile()
         {
-            var userFilePath = GlobalUserAccounts.GetAccountFilePath(Context.User.Id);
+            var userFilePath = _globalUserAccounts.GetAccountFilePath(Context.User.Id);
             if (String.IsNullOrEmpty(userFilePath))
             {
                 Context.Channel.SendMessageAsync("I don't have any information about you.");
@@ -85,7 +91,7 @@ namespace CommunityBot.Modules.Account
             var message = "";
             if (response.Content.ToLower().Contains(optionYes.ToLower()))
             {
-                message = GlobalUserAccounts.DeleteAccountFile(Context.User.Id)
+                message = _globalUserAccounts.DeleteAccountFile(Context.User.Id)
                     ? "All your data have been deleted."
                     : "We don't have information about you or couldn't find it.";
             }

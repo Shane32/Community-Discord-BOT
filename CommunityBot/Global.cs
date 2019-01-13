@@ -55,11 +55,11 @@ namespace CommunityBot
         {
             if (value > 100000)
             {
-                return $"Holy shit, {mention}! You're either cheating or you're really dedicated.";
+                return $"Wow, {mention}! You're either cheating or you're really dedicated.";
             }
             if (value > 50000)
             {
-                return $"Damn, you must be here often, {mention}. Do you have a crush on me or something?";
+                return $"You must be here often, {mention}. Do you have a crush on me or something?";
             }
             if (value > 20000)
             {

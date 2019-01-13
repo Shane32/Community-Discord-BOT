@@ -8,18 +8,24 @@ using Discord;
 
 namespace CommunityBot.Providers
 {
-    public static class RoleByPhraseProvider
+    public class RoleByPhraseProvider
     {
+        public readonly GlobalGuildAccounts _globalGuildAccounts;
+        public RoleByPhraseProvider(GlobalGuildAccounts globalGuildAccounts)
+        {
+            _globalGuildAccounts = globalGuildAccounts;
+        }
+
         public enum RoleByPhraseOperationResult { Success, AlreadyExists, Failed }
 
-        public static RoleByPhraseOperationResult AddPhrase(IGuild guild, string phrase)
+        public RoleByPhraseOperationResult AddPhrase(IGuild guild, string phrase)
         {
-            var guildSettings = GlobalGuildAccounts.GetGuildAccount(guild);
+            var guildSettings = _globalGuildAccounts.GetGuildAccount(guild);
 
             try
             {
                 guildSettings.RoleByPhraseSettings.AddPhrase(phrase);
-                GlobalGuildAccounts.SaveAccounts();
+                _globalGuildAccounts.SaveAccounts();
                 return RoleByPhraseOperationResult.Success;
             }
             catch (PhraseAlreadyAddedException)
@@ -32,16 +38,16 @@ namespace CommunityBot.Providers
             }
         }
 
-        public static RoleByPhraseOperationResult AddRole(IGuild guild, IRole role)
+        public RoleByPhraseOperationResult AddRole(IGuild guild, IRole role)
         {
-            var guildSettings = GlobalGuildAccounts.GetGuildAccount(guild);
+            var guildSettings = _globalGuildAccounts.GetGuildAccount(guild);
 
             if (guild.GetRole(role.Id) is null) return RoleByPhraseOperationResult.Failed;
 
             try
             {
                 guildSettings.RoleByPhraseSettings.AddRole(role.Id);
-                GlobalGuildAccounts.SaveAccounts();
+                _globalGuildAccounts.SaveAccounts();
                 return RoleByPhraseOperationResult.Success;
             }
             catch (RoleIdAlreadyAddedException)
@@ -54,16 +60,16 @@ namespace CommunityBot.Providers
             }
         }
 
-        public static RoleByPhraseOperationResult ForceRelation(IGuild guild, string phrase, IRole role)
+        public RoleByPhraseOperationResult ForceRelation(IGuild guild, string phrase, IRole role)
         {
-            var guildSettings = GlobalGuildAccounts.GetGuildAccount(guild);
+            var guildSettings = _globalGuildAccounts.GetGuildAccount(guild);
 
             if (guild.GetRole(role.Id) is null) return RoleByPhraseOperationResult.Failed;
 
             try
             {
                 guildSettings.RoleByPhraseSettings.ForceCreateRelation(phrase, role.Id);
-                GlobalGuildAccounts.SaveAccounts();
+                _globalGuildAccounts.SaveAccounts();
                 return RoleByPhraseOperationResult.Success;
             }
             catch (RelationAlreadyExistsException)
@@ -78,14 +84,14 @@ namespace CommunityBot.Providers
 
         public enum RelationCreationResult { Success, InvalidIndex, AlreadyExists, Failed }
 
-        public static RelationCreationResult CreateRelation(IGuild guild, int phraseIndex, int roleIdIndex)
+        public RelationCreationResult CreateRelation(IGuild guild, int phraseIndex, int roleIdIndex)
         {
-            var guildSettings = GlobalGuildAccounts.GetGuildAccount(guild);
+            var guildSettings = _globalGuildAccounts.GetGuildAccount(guild);
 
             try
             {
                 guildSettings.RoleByPhraseSettings.CreateRelation(phraseIndex, roleIdIndex);
-                GlobalGuildAccounts.SaveAccounts();
+                _globalGuildAccounts.SaveAccounts();
                 return RelationCreationResult.Success;
             }
             catch (ArgumentException)
@@ -102,33 +108,33 @@ namespace CommunityBot.Providers
             }
         }
 
-        public static void RemovePhrase(IGuild guild, int phraseIndex)
+        public void RemovePhrase(IGuild guild, int phraseIndex)
         {
-            var guildSettings = GlobalGuildAccounts.GetGuildAccount(guild);
+            var guildSettings = _globalGuildAccounts.GetGuildAccount(guild);
 
             guildSettings.RoleByPhraseSettings.RemovePhraseByIndex(phraseIndex);
-            GlobalGuildAccounts.SaveAccounts();
+            _globalGuildAccounts.SaveAccounts();
         }
 
-        public static void RemoveRole(IGuild guild, int roleIdIndex)
+        public void RemoveRole(IGuild guild, int roleIdIndex)
         {
-            var guildSettings = GlobalGuildAccounts.GetGuildAccount(guild);
+            var guildSettings = _globalGuildAccounts.GetGuildAccount(guild);
 
             guildSettings.RoleByPhraseSettings.RemoveRoleIdByIndex(roleIdIndex);
-            GlobalGuildAccounts.SaveAccounts();
+            _globalGuildAccounts.SaveAccounts();
         }
 
-        public static void RemoveRelation(IGuild guild, int phraseIndex, int roleIdIndex)
+        public void RemoveRelation(IGuild guild, int phraseIndex, int roleIdIndex)
         {
-            var guildSettings = GlobalGuildAccounts.GetGuildAccount(guild);
+            var guildSettings = _globalGuildAccounts.GetGuildAccount(guild);
 
             guildSettings.RoleByPhraseSettings.RemoveRelation(phraseIndex, roleIdIndex);
-            GlobalGuildAccounts.SaveAccounts();
+            _globalGuildAccounts.SaveAccounts();
         }
 
-        public static async Task EvaluateMessage(IGuild guild, string message, IGuildUser sender)
+        public async Task EvaluateMessage(IGuild guild, string message, IGuildUser sender)
         {
-            var guildSettings = GlobalGuildAccounts.GetGuildAccount(guild);
+            var guildSettings = _globalGuildAccounts.GetGuildAccount(guild);
 
             var triggeredPhrases = guildSettings.RoleByPhraseSettings.Phrases.Where(message.Contains).ToList();
 

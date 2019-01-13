@@ -9,13 +9,18 @@ using Newtonsoft.Json;
 
 namespace CommunityBot.Handlers
 {
-    class BlogHandler
+    public class BlogHandler
     {
-        private static readonly string blogFile = "blogs.json";
-        public static Embed SubscribeToBlog(ulong userId, string blogname)
+        private readonly JsonDataStorage _jsonDataStorage;
+        private readonly string blogFile = "blogs.json";
+        public BlogHandler(JsonDataStorage jsonDataStorage)
         {
-            var dataStorage = InversionOfControl.Container.GetInstance<JsonDataStorage>();
-            var blogs = dataStorage.RestoreObject<List<BlogItem>>(blogFile);
+            this._jsonDataStorage = jsonDataStorage;
+        }
+
+        public Embed SubscribeToBlog(ulong userId, string blogname)
+        {
+            var blogs = _jsonDataStorage.RestoreObject<List<BlogItem>>(blogFile);
 
             var blog = blogs.FirstOrDefault(k => k.Name == blogname);
 
@@ -25,7 +30,7 @@ namespace CommunityBot.Handlers
                 {
                     blog.Subscribers.Add(userId);
 
-                    dataStorage.StoreObject(blogs, blogFile, Formatting.Indented);
+                    _jsonDataStorage.StoreObject(blogs, blogFile, Formatting.Indented);
 
                     return EmbedHandler.CreateEmbed("Blog", "You now follow this blog", EmbedHandler.EmbedMessageType.Success);
                 }
@@ -40,10 +45,9 @@ namespace CommunityBot.Handlers
             }
         }
 
-        public static Embed UnSubscribeToBlog(ulong userId, string blogname)
+        public Embed UnSubscribeToBlog(ulong userId, string blogname)
         {
-            var dataStorage = InversionOfControl.Container.GetInstance<JsonDataStorage>();
-            var blogs = dataStorage.RestoreObject<List<BlogItem>>(blogFile);
+            var blogs = _jsonDataStorage.RestoreObject<List<BlogItem>>(blogFile);
 
             var blog = blogs.FirstOrDefault(k => k.Name == blogname);
 
@@ -53,7 +57,7 @@ namespace CommunityBot.Handlers
                 {
                     blog.Subscribers.Remove(userId);
 
-                    dataStorage.StoreObject(blogs, blogFile, Formatting.Indented);
+                    _jsonDataStorage.StoreObject(blogs, blogFile, Formatting.Indented);
 
                     return EmbedHandler.CreateEmbed("Blog", "You stopped following this blog", EmbedHandler.EmbedMessageType.Success);
                 }
@@ -68,7 +72,7 @@ namespace CommunityBot.Handlers
             }
         }
 
-        public static async Task ReactionAdded(SocketReaction reaction)
+        public async Task ReactionAdded(SocketReaction reaction)
         {
             var msgList = Global.MessagesIdToTrack ?? new Dictionary<ulong, string>();
             if (msgList.ContainsKey(reaction.MessageId))
@@ -76,7 +80,7 @@ namespace CommunityBot.Handlers
                 if (reaction.Emote.Name == "➕")
                 {
                     var item = msgList.FirstOrDefault(k => k.Key == reaction.MessageId);
-                    var embed = BlogHandler.SubscribeToBlog(reaction.User.Value.Id, item.Value);
+                    var embed = SubscribeToBlog(reaction.User.Value.Id, item.Value);
                 }
             }
         }

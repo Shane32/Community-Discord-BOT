@@ -15,14 +15,21 @@ namespace CommunityBot.Modules
     [Group("Blog"), Summary("Enables you to create a block that people can subscribe to so they don't miss out if you publish a new one")]
     public class Blogs : ModuleBase<MiunieCommandContext>
     {
+        private readonly JsonDataStorage jsonDataStorage;
+        private readonly BlogHandler blogHandler;
         private static readonly string blogFile = "blogs.json";
+        public Blogs(JsonDataStorage jsonDataStorage, BlogHandler blogHandler)
+        {
+            this.jsonDataStorage = jsonDataStorage;
+            this.blogHandler = blogHandler;
+        }
+
         [Command("Create"), Remarks("Create a new named block")]
         public async Task Create(string name)
         {
             await Context.Message.DeleteAsync();
 
-            var dataStorage = InversionOfControl.Container.GetInstance<JsonDataStorage>();
-            var blogs = dataStorage.RestoreObject<List<BlogItem>>(blogFile) ?? new List<BlogItem>();
+            var blogs = jsonDataStorage.RestoreObject<List<BlogItem>>(blogFile) ?? new List<BlogItem>();
 
             if (blogs.FirstOrDefault(k=>k.Name == name) == null)
             {
@@ -36,7 +43,7 @@ namespace CommunityBot.Modules
 
                 blogs.Add(newBlog);
 
-                dataStorage.StoreObject(blogs, blogFile, Formatting.Indented);
+                jsonDataStorage.StoreObject(blogs, blogFile, Formatting.Indented);
                 
                 var embed = EmbedHandler.CreateEmbed("Blog", $"Your blog {name} was created.", EmbedHandler.EmbedMessageType.Success);
                 await Context.Channel.SendMessageAsync("", false, embed);
@@ -53,7 +60,7 @@ namespace CommunityBot.Modules
         {
             await Context.Message.DeleteAsync();
 
-            var blogs = InversionOfControl.Container.GetInstance<JsonDataStorage>().RestoreObject<List<BlogItem>>(blogFile);
+            var blogs = jsonDataStorage.RestoreObject<List<BlogItem>>(blogFile);
 
             var blog = blogs.FirstOrDefault(k => k.Name == name && k.Author == Context.User.Id);
 
@@ -91,7 +98,7 @@ namespace CommunityBot.Modules
         {
             await Context.Message.DeleteAsync();
 
-            var embed = BlogHandler.SubscribeToBlog(Context.User.Id, name);
+            var embed = blogHandler.SubscribeToBlog(Context.User.Id, name);
 
             await Context.Channel.SendMessageAsync("", false, embed);
         }
@@ -101,7 +108,7 @@ namespace CommunityBot.Modules
         {
             await Context.Message.DeleteAsync();
 
-            var embed = BlogHandler.UnSubscribeToBlog(Context.User.Id, name);
+            var embed = blogHandler.UnSubscribeToBlog(Context.User.Id, name);
 
             await Context.Channel.SendMessageAsync("", false, embed);
         }
