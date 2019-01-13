@@ -75,7 +75,7 @@ namespace CommunityBot
             serviceCollection.AddSingleton<ListManager>();
             serviceCollection.AddSingleton<IOnboarding, Onboarding>();
             serviceCollection.AddSingleton<HelloWorldTask>();
-            serviceCollection.AddSingleton<IGlobalUserAccounts, GlobalUserAccounts>(); //todo: delete
+            serviceCollection.AddSingleton<IGlobalUserAccounts, GlobalUserAccounts>();
             serviceCollection.AddSingleton<IDiscordSocketClient, DiscordSocketClientAbstraction>();
             serviceCollection.AddSingleton<IDailyMiunies, Daily>();
             serviceCollection.AddSingleton<IMiuniesTransfer, Transfer>();
