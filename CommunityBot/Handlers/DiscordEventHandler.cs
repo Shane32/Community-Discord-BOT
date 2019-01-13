@@ -153,7 +153,6 @@ namespace CommunityBot.Handlers
         private async Task JoinedGuild(SocketGuild guild)
         {
             _onboarding.JoinedGuild(guild);
-            ServerBots.JoinedGuild(guild);
         }
 
         private async Task LatencyUpdated(int latencyBefore, int latencyAfter)
@@ -220,7 +219,6 @@ namespace CommunityBot.Handlers
         private async Task Ready()
         {
             _repeatedTaskFunctions.InitRepeatedTasks();
-            ServerBots.Init(_globalGuildAccounts);
          
         }
 
