@@ -22,6 +22,5 @@
     <PackageReference Include="Discord.Net" Version="2.0.1" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
     <PackageReference Include="Ofl.Google.Maps" Version="3.0.22" />
-    <PackageReference Include="Lamar" Version="2.0.1" />
   </ItemGroup>
 </Project>
