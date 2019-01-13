@@ -29,11 +29,10 @@ namespace CommunityBot.Handlers
         private readonly ListManager _listManager;
         private readonly IOnboarding _onboarding;
         private readonly Announcements _announcements;
-        private readonly MessageRewardHandler _messageRewardHandler;
         private readonly RepeatedTaskFunctions _repeatedTaskFunctions;
         private readonly GlobalGuildAccounts _globalGuildAccounts;
 
-        public DiscordEventHandler(Logger logger, DiscordSocketClient client, CommandHandler commandHandler, ApplicationSettings applicationSettings, ListManager listManager, IOnboarding onboarding, Announcements announcements, MessageRewardHandler messageRewardHandler, RepeatedTaskFunctions repeatedTaskFunctions, GlobalGuildAccounts globalGuildAccounts)
+        public DiscordEventHandler(Logger logger, DiscordSocketClient client, CommandHandler commandHandler, ApplicationSettings applicationSettings, ListManager listManager, IOnboarding onboarding, Announcements announcements, RepeatedTaskFunctions repeatedTaskFunctions, GlobalGuildAccounts globalGuildAccounts)
         {
             _logger = logger;
             _client = client;
@@ -42,7 +41,6 @@ namespace CommunityBot.Handlers
             _listManager = listManager;
             _onboarding = onboarding;
             _announcements = announcements;
-            _messageRewardHandler = messageRewardHandler;
             _repeatedTaskFunctions = repeatedTaskFunctions;
             _globalGuildAccounts = globalGuildAccounts;
         }
@@ -188,7 +186,6 @@ namespace CommunityBot.Handlers
         private async Task MessageReceived(SocketMessage message)
         {
             _commandHandler.HandleCommandAsync(message);
-            _messageRewardHandler.HandleMessageRewards(message);
         }
 
         private async Task MessageUpdated(Cacheable<IMessage, ulong> cacheMessageBefore, SocketMessage messageAfter, ISocketMessageChannel channel)

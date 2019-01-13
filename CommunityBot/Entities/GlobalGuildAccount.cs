@@ -22,8 +22,6 @@ namespace CommunityBot.Entities
 
         public IReadOnlyList<string> LeaveMessages { get; private set; } = new List<string>();
 
-        public Dictionary<string, string> Tags { get; private set; } = new Dictionary<string, string>();
-
         public RoleByPhraseSettings RoleByPhraseSettings { get; private set; } = new RoleByPhraseSettings();
 
         public int ServerActivityLog { get; set; }
@@ -47,8 +45,6 @@ namespace CommunityBot.Entities
                 WelcomeMessages = settings.WelcomeMessages.Value;
             if (settings.LeaveMessages.IsSpecified)
                 LeaveMessages = settings.LeaveMessages.Value;
-            if (settings.Tags.IsSpecified)
-                Tags = settings.Tags.Value;
             if (settings.RoleByPhraseSettings.IsSpecified)
                 RoleByPhraseSettings = settings.RoleByPhraseSettings.Value;
             globalGuildAccounts.SaveAccounts(Id);

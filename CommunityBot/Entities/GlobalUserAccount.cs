@@ -13,13 +13,7 @@ namespace CommunityBot.Entities
 
         public ulong Id { get; }
 
-        public ulong Miunies { get; set; } = 1;
-
-        public DateTime LastDaily { get; set; } = DateTime.UtcNow.AddDays(-2);
-
         public DateTime LastMessage { get; set; } = DateTime.UtcNow;
-
-        public Dictionary<string, string> Tags { get; set; } = new Dictionary<string, string>();
 
         public List<ReminderEntry> Reminders { get; internal set; } = new List<ReminderEntry>();
 
