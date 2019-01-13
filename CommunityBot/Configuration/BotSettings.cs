@@ -33,11 +33,14 @@ namespace CommunityBot.Configuration
                 jsonDataStorage.StoreObject(config, configFile, useIndentations: true);
             }
         }
-        
+
+        // SaveSettings serves no purpose, unless other settings are added back into BotConfig
+        //
+        /*
         private ActionResult SaveSettings()
         {
             var result = new ActionResult();
-            
+
             try
             {
                 jsonDataStorage.StoreObject(config, configFile);
@@ -49,5 +52,7 @@ namespace CommunityBot.Configuration
 
             return result;
         }
+        */
+
     }
 }
