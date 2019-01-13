@@ -6,16 +6,16 @@ namespace CommunityBot.Features.Economy
 {
     public class Daily : IDailyMiunies
     {
-        private readonly IGlobalUserAccountProvider globalUserAccountProvider;
+        private readonly IGlobalUserAccounts globalUserAccountProvider;
 
-        public Daily(IGlobalUserAccountProvider globalUserAccountProvider)
+        public Daily(IGlobalUserAccounts globalUserAccountProvider)
         {
             this.globalUserAccountProvider = globalUserAccountProvider;
         }
         
         public void GetDaily(ulong userId)
         {
-            var account = globalUserAccountProvider.GetById(userId);
+            var account = globalUserAccountProvider.GetUserAccount(userId);
             var sinceLastDaily = DateTime.UtcNow - account.LastDaily;
 
             if (sinceLastDaily.TotalHours < 24)
@@ -28,7 +28,7 @@ namespace CommunityBot.Features.Economy
             account.Miunies += Constants.DailyMuiniesGain;
             account.LastDaily = DateTime.UtcNow;
 
-            globalUserAccountProvider.SaveByIds(userId);
+            globalUserAccountProvider.SaveAccounts(userId);
         }
     }
 }

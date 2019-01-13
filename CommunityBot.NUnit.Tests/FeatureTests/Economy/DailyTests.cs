@@ -21,8 +21,8 @@ namespace CommunityBot.NUnit.Tests.FeatureTests.Economy
                 Miunies = miuniesBefore
             };
 
-            var globalUserAccountsMock = new Mock<IGlobalUserAccountProvider>();
-            globalUserAccountsMock.Setup(a => a.GetById(userId)).Returns(testUser);
+            var globalUserAccountsMock = new Mock<IGlobalUserAccounts>();
+            globalUserAccountsMock.Setup(a => a.GetUserAccount(userId)).Returns(testUser);
 
             IDailyMiunies dailyService = new Daily(globalUserAccountsMock.Object);
 
@@ -41,8 +41,8 @@ namespace CommunityBot.NUnit.Tests.FeatureTests.Economy
                 LastDaily = DateTime.UtcNow.AddHours(-7)
             };
 
-            var globalUserAccountsMock = new Mock<IGlobalUserAccountProvider>();
-            globalUserAccountsMock.Setup(a => a.GetById(userId)).Returns(testUser);
+            var globalUserAccountsMock = new Mock<IGlobalUserAccounts>();
+            globalUserAccountsMock.Setup(a => a.GetUserAccount(userId)).Returns(testUser);
 
             IDailyMiunies dailyService = new Daily(globalUserAccountsMock.Object);
 

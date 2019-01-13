@@ -5,9 +5,8 @@ using System.Text;
 
 namespace CommunityBot.Features.GlobalAccounts
 {
-    public interface IGlobalUserAccountProvider
+    public interface IGlobalUserAccounts : IGlobalAccounts
     {
-        GlobalUserAccount GetById(ulong userId);
-        void SaveByIds(params ulong[] userId);
+        GlobalUserAccount GetUserAccount(ulong userId);
     }
 }

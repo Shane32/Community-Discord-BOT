@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace CommunityBot.Features.GlobalAccounts
 {
-    public class GlobalUserAccounts : IGlobalAccounts
+    public class GlobalUserAccounts : IGlobalAccounts, IGlobalUserAccounts
     {
         private readonly ConcurrentDictionary<ulong, GlobalUserAccount> userAccounts = new ConcurrentDictionary<ulong, GlobalUserAccount>();
         private readonly DirectoryInfo _directoryInfo;

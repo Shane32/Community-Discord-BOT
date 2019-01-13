@@ -6,10 +6,10 @@ namespace CommunityBot.Features.Economy
 {
     public class Transfer : IMiuniesTransfer
     {
-        private readonly IGlobalUserAccountProvider globalUserAccountProvider;
+        private readonly IGlobalUserAccounts globalUserAccountProvider;
         private readonly IDiscordSocketClient discordClient;
 
-        public Transfer(IGlobalUserAccountProvider globalUserAccountProvider, IDiscordSocketClient discordClient)
+        public Transfer(IGlobalUserAccounts globalUserAccountProvider, IDiscordSocketClient discordClient)
         {
             this.globalUserAccountProvider = globalUserAccountProvider;
             this.discordClient = discordClient;
@@ -21,16 +21,16 @@ namespace CommunityBot.Features.Economy
             
             if (targetUserId == discordClient.GetCurrentUser().Id) { throw new InvalidOperationException(Constants.ExTransferToMiunie); }
 
-            var transferSource = globalUserAccountProvider.GetById(sourceUserId);
+            var transferSource = globalUserAccountProvider.GetUserAccount(sourceUserId);
 
             if (transferSource.Miunies < amount) { throw new InvalidOperationException(Constants.ExTransferNotEnoughFunds); }
 
-            var transferTarget = globalUserAccountProvider.GetById(targetUserId);
+            var transferTarget = globalUserAccountProvider.GetUserAccount(targetUserId);
 
             transferSource.Miunies -= amount;
             transferTarget.Miunies += amount;
 
-            globalUserAccountProvider.SaveByIds(transferSource.Id, transferTarget.Id);
+            globalUserAccountProvider.SaveAccounts(transferSource.Id, transferTarget.Id);
         }
     }
 }

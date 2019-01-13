@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CommunityBot.Features.GlobalAccounts
 {
-    interface IGlobalAccounts
+    public interface IGlobalAccounts
     {
         void SaveAccounts(params ulong[] ids);
     }
