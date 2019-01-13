@@ -28,26 +28,12 @@ namespace CommunityBot.Configuration
                 // Setting up defaults
                 config = new BotConfig()
                 {
-                    Prefix = "$",
                     Token = "YOUR-TOKEN-HERE"
                 };
                 jsonDataStorage.StoreObject(config, configFile, useIndentations: true);
             }
         }
-
-        public ActionResult SetCommandPrefix(string prefix)
-        {
-            var result = new ActionResult();
-            
-            config.Prefix = prefix;
-
-            var saveSettingsResult = SaveSettings();
-
-            result.Merge(saveSettingsResult);
-
-            return result;
-        }
-
+        
         private ActionResult SaveSettings()
         {
             var result = new ActionResult();
