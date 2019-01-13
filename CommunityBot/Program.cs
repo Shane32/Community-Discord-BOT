@@ -24,7 +24,6 @@ namespace CommunityBot
     {
         private static DiscordSocketClient _client;
         private static IServiceProvider _serviceProvider;
-        private static ApplicationSettings _appSettings;
 
         private static async Task Main(string[] args)
         {

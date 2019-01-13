@@ -10,7 +10,7 @@ namespace CommunityBot.Providers
 {
     public class RoleByPhraseProvider
     {
-        public readonly GlobalGuildAccounts _globalGuildAccounts;
+        private readonly GlobalGuildAccounts _globalGuildAccounts;
         public RoleByPhraseProvider(GlobalGuildAccounts globalGuildAccounts)
         {
             _globalGuildAccounts = globalGuildAccounts;

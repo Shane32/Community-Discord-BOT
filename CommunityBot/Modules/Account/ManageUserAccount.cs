@@ -14,7 +14,7 @@ namespace CommunityBot.Modules.Account
     [Group("account")]
     public class ManageUserAccount : ModuleBase<MiunieCommandContext>
     {
-        private GlobalUserAccounts _globalUserAccounts;
+        private readonly GlobalUserAccounts _globalUserAccounts;
         public ManageUserAccount (GlobalUserAccounts globalUserAccounts)
         {
             _globalUserAccounts = globalUserAccounts;

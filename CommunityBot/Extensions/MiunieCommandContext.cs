@@ -8,7 +8,7 @@ namespace CommunityBot.Extensions
     public class MiunieCommandContext : SocketCommandContext
     {
         public GlobalUserAccount UserAccount { get; }
-        private GlobalUserAccounts _globalUserAccounts;
+        private readonly GlobalUserAccounts _globalUserAccounts;
         
         public MiunieCommandContext(DiscordSocketClient client, SocketUserMessage msg, GlobalUserAccounts globalUserAccounts) : base(client, msg)
         {
