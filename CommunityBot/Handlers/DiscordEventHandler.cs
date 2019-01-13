@@ -30,13 +30,12 @@ namespace CommunityBot.Handlers
         private readonly TriviaGames _triviaGames;
         private readonly ListManager _listManager;
         private readonly IOnboarding _onboarding;
-        private readonly BlogHandler _blogHandler;
         private readonly Announcements _announcements;
         private readonly MessageRewardHandler _messageRewardHandler;
         private readonly RepeatedTaskFunctions _repeatedTaskFunctions;
         private readonly GlobalGuildAccounts _globalGuildAccounts;
 
-        public DiscordEventHandler(Logger logger, TriviaGames triviaGames, DiscordSocketClient client, CommandHandler commandHandler, ApplicationSettings applicationSettings, ListManager listManager, IOnboarding onboarding, BlogHandler blogHandler, Announcements announcements, MessageRewardHandler messageRewardHandler, RepeatedTaskFunctions repeatedTaskFunctions, GlobalGuildAccounts globalGuildAccounts)
+        public DiscordEventHandler(Logger logger, TriviaGames triviaGames, DiscordSocketClient client, CommandHandler commandHandler, ApplicationSettings applicationSettings, ListManager listManager, IOnboarding onboarding, Announcements announcements, MessageRewardHandler messageRewardHandler, RepeatedTaskFunctions repeatedTaskFunctions, GlobalGuildAccounts globalGuildAccounts)
         {
             _logger = logger;
             _client = client;
@@ -45,7 +44,6 @@ namespace CommunityBot.Handlers
             _triviaGames = triviaGames;
             _listManager = listManager;
             _onboarding = onboarding;
-            _blogHandler = blogHandler;
             _announcements = announcements;
             _messageRewardHandler = messageRewardHandler;
             _repeatedTaskFunctions = repeatedTaskFunctions;
@@ -211,7 +209,6 @@ namespace CommunityBot.Handlers
             (new ListReactionHandler()).HandleReactionAdded(new ListHelper.UserInfo(user.Id, roleIds), _listManager, cacheMessage, reaction);
 
             _triviaGames.HandleReactionAdded(cacheMessage, reaction);
-            _blogHandler.ReactionAdded(reaction);
         }
 
         private async Task ReactionRemoved(Cacheable<IUserMessage, ulong> cacheMessage, ISocketMessageChannel channel, SocketReaction reaction)

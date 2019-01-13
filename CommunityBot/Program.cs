@@ -75,7 +75,6 @@ namespace CommunityBot
             serviceCollection.AddSingleton<HelloWorldTask>();
             serviceCollection.AddSingleton<IGlobalUserAccounts, GlobalUserAccounts>(); //todo: delete
 
-            serviceCollection.AddSingleton<BlogHandler>();
             serviceCollection.AddSingleton<GlobalGuildAccounts>();
             serviceCollection.AddSingleton<GlobalUserAccounts>();
             serviceCollection.AddSingleton<Announcements>();
