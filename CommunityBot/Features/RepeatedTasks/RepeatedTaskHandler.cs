@@ -5,7 +5,7 @@ namespace CommunityBot.Features.RepeatedTasks
 {
     public class RepeatedTaskHandler
     {
-        private Dictionary<string, Timer> Timers;
+        public Dictionary<string, Timer> Timers;
 
         public RepeatedTaskHandler()
         {

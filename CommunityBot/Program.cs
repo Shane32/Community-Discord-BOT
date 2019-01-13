@@ -12,7 +12,6 @@ using CommunityBot.Features.Lists;
 using CommunityBot.Features.Onboarding;
 using CommunityBot.Features.GlobalAccounts;
 using CommunityBot.Features.Onboarding.Tasks;
-using CommunityBot.Providers;
 using CommunityBot.Helpers;
 using CommunityBot.Features.RepeatedTasks;
 
@@ -77,7 +76,6 @@ namespace CommunityBot
             serviceCollection.AddSingleton<GlobalGuildAccounts>();
             serviceCollection.AddSingleton<GlobalUserAccounts>();
             serviceCollection.AddSingleton<Announcements>();
-            serviceCollection.AddSingleton<RoleByPhraseProvider>();
             serviceCollection.AddSingleton<RepeatedTaskFunctions>();
             serviceCollection.AddSingleton<BotSettings>();
             serviceCollection.AddSingleton<JsonDataStorage>();

@@ -21,9 +21,7 @@ namespace CommunityBot.Entities
         public IReadOnlyList<string> WelcomeMessages { get; private set; } = new List<string> { };
 
         public IReadOnlyList<string> LeaveMessages { get; private set; } = new List<string>();
-
-        public RoleByPhraseSettings RoleByPhraseSettings { get; private set; } = new RoleByPhraseSettings();
-
+        
         public int ServerActivityLog { get; set; }
 
         public ulong LogChannelId { get; set; }
@@ -45,8 +43,6 @@ namespace CommunityBot.Entities
                 WelcomeMessages = settings.WelcomeMessages.Value;
             if (settings.LeaveMessages.IsSpecified)
                 LeaveMessages = settings.LeaveMessages.Value;
-            if (settings.RoleByPhraseSettings.IsSpecified)
-                RoleByPhraseSettings = settings.RoleByPhraseSettings.Value;
             globalGuildAccounts.SaveAccounts(Id);
             return this;
         }
@@ -91,8 +87,6 @@ namespace CommunityBot.Entities
 
         public Optional<Dictionary<string, string>> Tags { get; private set; }
         public GuildAccountSettings SetTags(Dictionary<string, string> tags) { Tags = tags; return this; }
-
-        public Optional<RoleByPhraseSettings> RoleByPhraseSettings { get; private set; }
-        public GuildAccountSettings SetBotData(RoleByPhraseSettings roleByPhraseSettings) { RoleByPhraseSettings = roleByPhraseSettings; return this; }
+        
     }
 }

@@ -6,7 +6,6 @@ using CommunityBot.Extensions;
 using Discord.Commands;
 using Discord.WebSocket;
 using CommunityBot.Features.GlobalAccounts;
-using CommunityBot.Providers;
 
 namespace CommunityBot.Handlers
 {
@@ -17,16 +16,14 @@ namespace CommunityBot.Handlers
         private readonly IServiceProvider _serviceProvider;
         private readonly GlobalGuildAccounts _globalGuildAccounts;
         private readonly GlobalUserAccounts _globalUserAccounts;
-        private readonly RoleByPhraseProvider _roleByPhraseProvider;
 
-        public CommandHandler(DiscordSocketClient client, CommandService cmdService, IServiceProvider serviceProvider, GlobalGuildAccounts globalGuildAccounts, GlobalUserAccounts globalUserAccounts, RoleByPhraseProvider roleByPhraseProvider)
+        public CommandHandler(DiscordSocketClient client, CommandService cmdService, IServiceProvider serviceProvider, GlobalGuildAccounts globalGuildAccounts, GlobalUserAccounts globalUserAccounts)
         {
             _client = client;
             _cmdService = cmdService;
             _serviceProvider = serviceProvider;
             _globalGuildAccounts = globalGuildAccounts;
             _globalUserAccounts = globalUserAccounts;
-            _roleByPhraseProvider = roleByPhraseProvider;
         }
 
         public async Task InitializeAsync()
@@ -41,12 +38,6 @@ namespace CommunityBot.Handlers
             if (msg.Channel is SocketDMChannel) { return; }
             if (msg.Author.IsBot) { return; }
             var context = new MiunieCommandContext(_client, msg, _globalUserAccounts);
-
-            await _roleByPhraseProvider.EvaluateMessage(
-                context.Guild,
-                context.Message.Content,
-                (SocketGuildUser) context.User
-            );
 
             var argPos = 0;
             if (msg.HasMentionPrefix(_client.CurrentUser, ref argPos) || CheckPrefix(ref argPos, context))
