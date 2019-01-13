@@ -3,11 +3,11 @@ using System.Timers;
 
 namespace CommunityBot.Features.RepeatedTasks
 {
-    internal class RepeatedTaskHandler
+    public class RepeatedTaskHandler
     {
-        internal Dictionary<string, Timer> Timers;
+        private Dictionary<string, Timer> Timers;
 
-        internal RepeatedTaskHandler()
+        public RepeatedTaskHandler()
         {
             Timers = new Dictionary<string, Timer>();
         }

@@ -15,7 +15,6 @@ namespace CommunityBot
         internal static DiscordSocketClient Client { get; set; }
         internal static Dictionary<ulong, string> MessagesIdToTrack { get; set; }
         internal static Random Rng { get; set; } = new Random();
-        internal static RepeatedTaskHandler TaskHander = new RepeatedTaskHandler();
         internal static readonly String version = Assembly.GetExecutingAssembly().GetName().Version.ToString().TrimEnd('0').TrimEnd('.');
         internal static bool Headless = false;
         // Global Helper methods

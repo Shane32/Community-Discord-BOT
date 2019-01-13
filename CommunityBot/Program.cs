@@ -14,6 +14,7 @@ using CommunityBot.Features.GlobalAccounts;
 using CommunityBot.Features.Onboarding.Tasks;
 using CommunityBot.Providers;
 using CommunityBot.Helpers;
+using CommunityBot.Features.RepeatedTasks;
 
 namespace CommunityBot
 {
@@ -80,6 +81,7 @@ namespace CommunityBot
             serviceCollection.AddSingleton<RepeatedTaskFunctions>();
             serviceCollection.AddSingleton<BotSettings>();
             serviceCollection.AddSingleton<JsonDataStorage>();
+            serviceCollection.AddSingleton<RepeatedTaskHandler>();
         }
 
         private static async Task<bool> AttemptLogin()

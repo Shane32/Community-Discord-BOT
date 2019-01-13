@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using CommunityBot.Entities;
 using CommunityBot.Features.GlobalAccounts;
+using CommunityBot.Features.RepeatedTasks;
 using Discord.WebSocket;
 
 namespace CommunityBot.Helpers
@@ -12,25 +13,27 @@ namespace CommunityBot.Helpers
     public class RepeatedTaskFunctions
     {
         private readonly GlobalUserAccounts _globalUserAccounts;
-        public RepeatedTaskFunctions(GlobalUserAccounts globalUserAccounts)
+        private readonly RepeatedTaskHandler _repeatedTaskHandler;
+        public RepeatedTaskFunctions(GlobalUserAccounts globalUserAccounts, RepeatedTaskHandler repeatedTaskHandler)
         {
             _globalUserAccounts = globalUserAccounts;
+            _repeatedTaskHandler = repeatedTaskHandler;
         }
 
         public Task InitRepeatedTasks()
         {
             // Look for expired reminders every 3 seconds
-            Global.TaskHander.AddRepeatedTask("Reminders", 3000, new ElapsedEventHandler(CheckReminders));
+            _repeatedTaskHandler.AddRepeatedTask("Reminders", 3000, new ElapsedEventHandler(CheckReminders));
             // Help Message every 2 hours
-            Global.TaskHander.AddRepeatedTask("Help Message", 7200000, new ElapsedEventHandler(SendHelpMessage));
+            // _repeatedTaskHandler.AddRepeatedTask("Help Message", 7200000, new ElapsedEventHandler(SendHelpMessage));
             return Task.CompletedTask;
         }
 
-        private static async void SendHelpMessage(object sender, ElapsedEventArgs e)
-        {
-            var general = Global.Client.GetChannel(403278466746810370) as SocketTextChannel;
-            general?.SendMessageAsync("If you have any problems with your code, please follow the instructions in <#406360393489973248>!");
-        }
+        //private static async void SendHelpMessage(object sender, ElapsedEventArgs e)
+        //{
+        //    var general = Global.Client.GetChannel(403278466746810370) as SocketTextChannel;
+        //    general?.SendMessageAsync("If you have any problems with your code, please follow the instructions in <#406360393489973248>!");
+        //}
 
         private async void CheckReminders(object sender, ElapsedEventArgs e)
         {
