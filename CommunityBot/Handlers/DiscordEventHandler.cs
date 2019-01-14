@@ -28,11 +28,10 @@ namespace CommunityBot.Handlers
         private readonly Logger _logger;
         private readonly ListManager _listManager;
         private readonly IOnboarding _onboarding;
-        private readonly Announcements _announcements;
         private readonly RepeatedTaskFunctions _repeatedTaskFunctions;
         private readonly GlobalGuildAccounts _globalGuildAccounts;
 
-        public DiscordEventHandler(Logger logger, DiscordSocketClient client, CommandHandler commandHandler, ApplicationSettings applicationSettings, ListManager listManager, IOnboarding onboarding, Announcements announcements, RepeatedTaskFunctions repeatedTaskFunctions, GlobalGuildAccounts globalGuildAccounts)
+        public DiscordEventHandler(Logger logger, DiscordSocketClient client, CommandHandler commandHandler, ApplicationSettings applicationSettings, ListManager listManager, IOnboarding onboarding, RepeatedTaskFunctions repeatedTaskFunctions, GlobalGuildAccounts globalGuildAccounts)
         {
             _logger = logger;
             _client = client;
@@ -40,7 +39,6 @@ namespace CommunityBot.Handlers
             _applicationSettings = applicationSettings;
             _listManager = listManager;
             _onboarding = onboarding;
-            _announcements = announcements;
             _repeatedTaskFunctions = repeatedTaskFunctions;
             _globalGuildAccounts = globalGuildAccounts;
         }
@@ -256,12 +254,12 @@ namespace CommunityBot.Handlers
 
         private async Task UserJoined(SocketGuildUser user)
         {
-            _announcements.UserJoined(user);
+
         }
 
         private async Task UserLeft(SocketGuildUser user)
         {
-            _announcements.UserLeft(user, _client);
+
         }
 
         private async Task UserUnbanned(SocketUser user, SocketGuild guild)

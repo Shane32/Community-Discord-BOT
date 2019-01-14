@@ -75,7 +75,6 @@ namespace CommunityBot
 
             serviceCollection.AddSingleton<GlobalGuildAccounts>();
             serviceCollection.AddSingleton<GlobalUserAccounts>();
-            serviceCollection.AddSingleton<Announcements>();
             serviceCollection.AddSingleton<RepeatedTaskFunctions>();
             serviceCollection.AddSingleton<BotSettings>();
             serviceCollection.AddSingleton<JsonDataStorage>();
