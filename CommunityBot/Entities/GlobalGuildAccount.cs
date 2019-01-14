@@ -19,6 +19,10 @@ namespace CommunityBot.Entities
 
         public ulong LogChannelId { get; set; }
 
+        public ulong EventListingChannelId { get; set; }
+
+        public List<EventListing> EventListings { get; set; }
+
         /* Add more values to store */
         
         public GlobalGuildAccount Modify(Action<GuildAccountSettings> func, GlobalGuildAccounts globalGuildAccounts)
