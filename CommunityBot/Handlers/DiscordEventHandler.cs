@@ -6,7 +6,6 @@ using CommunityBot.Configuration;
 using CommunityBot.Features;
 using CommunityBot.Features.GlobalAccounts;
 using CommunityBot.Features.Lists;
-using CommunityBot.Features.Onboarding;
 using CommunityBot.Helpers;
 using CommunityBot.Modules;
 using Discord;
@@ -27,18 +26,16 @@ namespace CommunityBot.Handlers
         private readonly ApplicationSettings _applicationSettings;
         private readonly Logger _logger;
         private readonly ListManager _listManager;
-        private readonly IOnboarding _onboarding;
         private readonly RepeatedTaskFunctions _repeatedTaskFunctions;
         private readonly GlobalGuildAccounts _globalGuildAccounts;
 
-        public DiscordEventHandler(Logger logger, DiscordSocketClient client, CommandHandler commandHandler, ApplicationSettings applicationSettings, ListManager listManager, IOnboarding onboarding, RepeatedTaskFunctions repeatedTaskFunctions, GlobalGuildAccounts globalGuildAccounts)
+        public DiscordEventHandler(Logger logger, DiscordSocketClient client, CommandHandler commandHandler, ApplicationSettings applicationSettings, ListManager listManager, RepeatedTaskFunctions repeatedTaskFunctions, GlobalGuildAccounts globalGuildAccounts)
         {
             _logger = logger;
             _client = client;
             _commandHandler = commandHandler;
             _applicationSettings = applicationSettings;
             _listManager = listManager;
-            _onboarding = onboarding;
             _repeatedTaskFunctions = repeatedTaskFunctions;
             _globalGuildAccounts = globalGuildAccounts;
         }
@@ -148,7 +145,7 @@ namespace CommunityBot.Handlers
 
         private async Task JoinedGuild(SocketGuild guild)
         {
-            _onboarding.JoinedGuild(guild);
+
         }
 
         private async Task LatencyUpdated(int latencyBefore, int latencyAfter)
