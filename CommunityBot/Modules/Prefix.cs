@@ -21,7 +21,7 @@ namespace CommunityBot.Modules
         [Remarks("Adds a prefix to the list of prefixes")]
         public async Task AddPrefix([Remainder] string prefix)
         {
-            var guildAcc = _globalGuildAccounts.GetGuildAccount(Context.Guild.Id);
+            var guildAcc = _globalGuildAccounts.GetById(Context.Guild.Id);
             var response = $"Failed to add the Prefix... Was `{prefix}` already a prefix?";
             if (!guildAcc.Prefixes.Contains(prefix))
             {
@@ -37,7 +37,7 @@ namespace CommunityBot.Modules
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task RemovePrefix([Remainder] string prefix)
         {
-            var guildAcc = _globalGuildAccounts.GetGuildAccount(Context.Guild.Id);
+            var guildAcc = _globalGuildAccounts.GetById(Context.Guild.Id);
             var response = $"Failed to remove the Prefix... Was `{prefix}` really a prefix?";
             if (guildAcc.Prefixes.Contains(prefix))
             {
@@ -53,7 +53,7 @@ namespace CommunityBot.Modules
         [Command("list"), Remarks("Show all possible prefixes for this server")]
         public async Task ListPrefixes()
         {
-            var prefixes = _globalGuildAccounts.GetGuildAccount(Context.Guild.Id).Prefixes;
+            var prefixes = _globalGuildAccounts.GetById(Context.Guild.Id).Prefixes;
             var response = "No Prefix set yet... just mention me to use commands!";
             if (prefixes.Count != 0) response = "Usable Prefixes are:\n`" + string.Join("`, `", prefixes) + "`\nOr just mention me! :grin:";
             await ReplyAsync(response);

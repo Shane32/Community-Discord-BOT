@@ -30,7 +30,7 @@ namespace CommunityBot.Features.GlobalAccounts
             }
         }
 
-        public GlobalGuildAccount GetGuildAccount(ulong id)
+        public GlobalGuildAccount GetById(ulong id)
         {
             return serverAccounts.GetOrAdd(id, (key) =>
             {
@@ -42,7 +42,7 @@ namespace CommunityBot.Features.GlobalAccounts
 
         public GlobalGuildAccount GetGuildAccount(IGuild guild)
         {
-            return GetGuildAccount(guild.Id);
+            return GetById(guild.Id);
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace CommunityBot.Features.GlobalAccounts
         {
             foreach (var id in ids)
             {
-                _jsonDataStorage.StoreObject(GetGuildAccount(id), Path.Combine(Constants.ServerAccountsFolder, $"{id}.json"), useIndentations: true);
+                _jsonDataStorage.StoreObject(GetById(id), Path.Combine(Constants.ServerAccountsFolder, $"{id}.json"), useIndentations: true);
             }
         }
     }

@@ -73,7 +73,7 @@ namespace CommunityBot.Handlers
         private bool CheckPrefix(ref int argPos, SocketCommandContext context)
         {
             if (context.Guild is null) return false;
-            var prefixes = _globalGuildAccounts.GetGuildAccount(context.Guild.Id).Prefixes;
+            var prefixes = _globalGuildAccounts.GetById(context.Guild.Id).Prefixes;
             var tmpArgPos = 0;
             var success = prefixes.Any(pre =>
             {

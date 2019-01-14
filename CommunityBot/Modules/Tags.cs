@@ -29,7 +29,7 @@ namespace CommunityBot.Modules
                                  "Try the `help tag` command to get more information on how to use this command.");
                 return;
             }
-            var guildAcc = _globalGuildAccounts.GetGuildAccount(Context.Guild.Id);
+            var guildAcc = _globalGuildAccounts.GetById(Context.Guild.Id);
             var response = TagFunctions.GetTag(tagName, guildAcc);
             await ReplyAsync(response);
         }
@@ -37,7 +37,7 @@ namespace CommunityBot.Modules
         [Command("new"), Alias("add"), Remarks("Adds a new (not yet existing) tag to the server")]
         public async Task AddTag(string tagName, [Remainder] string tagContent)
         {
-            var guildAcc = _globalGuildAccounts.GetGuildAccount(Context.Guild.Id);
+            var guildAcc = _globalGuildAccounts.GetById(Context.Guild.Id);
             var response = TagFunctions.AddTag(tagName, tagContent, _globalGuildAccounts, guildAcc);
             await ReplyAsync(response);
         }
@@ -45,7 +45,7 @@ namespace CommunityBot.Modules
         [Command("update"), Remarks("Updates the content of an existing tag of the server")]
         public async Task UpdateTag(string tagName, [Remainder] string tagContent)
         {
-            var guildAcc = _globalGuildAccounts.GetGuildAccount(Context.Guild.Id);
+            var guildAcc = _globalGuildAccounts.GetById(Context.Guild.Id);
             var response = TagFunctions.UpdateTag(tagName, tagContent, _globalGuildAccounts, guildAcc);
             await ReplyAsync(response);
         }
@@ -53,7 +53,7 @@ namespace CommunityBot.Modules
         [Command("remove"), Remarks("Removes a tag off the server")]
         public async Task RemoveTag(string tagName)
         {
-            var guildAcc = _globalGuildAccounts.GetGuildAccount(Context.Guild.Id);
+            var guildAcc = _globalGuildAccounts.GetById(Context.Guild.Id);
             var response = TagFunctions.RemoveTag(tagName, _globalGuildAccounts, guildAcc);
             await ReplyAsync(response);
         }
@@ -61,7 +61,7 @@ namespace CommunityBot.Modules
         [Command("list"), Remarks("Show all tag on this server")]
         public async Task ListTags()
         {
-            var guildAcc = _globalGuildAccounts.GetGuildAccount(Context.Guild.Id);
+            var guildAcc = _globalGuildAccounts.GetById(Context.Guild.Id);
             var emb = TagFunctions.BuildTagListEmbed(guildAcc);
             await ReplyAsync("", false, emb);
         }

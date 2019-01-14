@@ -22,7 +22,7 @@ namespace CommunityBot.Modules
         [Remarks("Sets the channel where to post announcements")]
         public async Task SetAnnouncementChannel(ITextChannel channel)
         {
-            var guildAcc = _globalGuildAccounts.GetGuildAccount(Context.Guild.Id);
+            var guildAcc = _globalGuildAccounts.GetById(Context.Guild.Id);
             guildAcc.Modify(g => g.SetAnnouncementChannelId(channel.Id), _globalGuildAccounts);
             await ReplyAsync("The Announcement-Channel has been set to " + channel.Mention);
         }
@@ -31,7 +31,7 @@ namespace CommunityBot.Modules
         [Remarks("Turns posting announcements to a channel off")]
         public async Task UnsetAnnouncementChannel()
         {
-            var guildAcc = _globalGuildAccounts.GetGuildAccount(Context.Guild.Id);
+            var guildAcc = _globalGuildAccounts.GetById(Context.Guild.Id);
             guildAcc.Modify(g => g.SetAnnouncementChannelId(0), _globalGuildAccounts);
             await ReplyAsync("Now there is no Announcement-Channel anymore! No more Announcements from now on... RIP!");
         }
@@ -53,7 +53,7 @@ namespace CommunityBot.Modules
                  "`<botname>`, `<botdiscriminator>`, `<botmention>` ")]
         public async Task AddWelcomeMessage([Remainder] string message)
         {
-            var guildAcc = _globalGuildAccounts.GetGuildAccount(Context.Guild.Id);
+            var guildAcc = _globalGuildAccounts.GetById(Context.Guild.Id);
             var response = $"Failed to add this Welcome Message...";
             if (!guildAcc.WelcomeMessages.Contains(message))
             {
@@ -70,7 +70,7 @@ namespace CommunityBot.Modules
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task RemoveWelcomeMessage(int messageIndex)
         {
-            var guildAcc = _globalGuildAccounts.GetGuildAccount(Context.Guild.Id);
+            var guildAcc = _globalGuildAccounts.GetById(Context.Guild.Id);
             var messages = guildAcc.WelcomeMessages.ToList();
             var response = $"Failed to remove this Welcome Message... Use the number shown in `welcome list` next to the `#` sign!";
             if (messages.Count > messageIndex - 1)
@@ -87,7 +87,7 @@ namespace CommunityBot.Modules
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task ListWelcomeMessages()
         {
-            var welcomeMessages = _globalGuildAccounts.GetGuildAccount(Context.Guild.Id).WelcomeMessages;
+            var welcomeMessages = _globalGuildAccounts.GetById(Context.Guild.Id).WelcomeMessages;
             var embB = new EmbedBuilder().WithTitle("No Welcome Messages set yet... add some if you want to greet incoming people! =)");
             if (welcomeMessages.Count > 0) embB.WithTitle("Possible Welcome Messages:");
 
@@ -118,7 +118,7 @@ namespace CommunityBot.Modules
                  "`<botname>`, `<botdiscriminator>`, `<botmention>`")]
         public async Task AddLeaveMessage([Remainder] string message)
         {
-            var guildAcc = _globalGuildAccounts.GetGuildAccount(Context.Guild.Id);
+            var guildAcc = _globalGuildAccounts.GetById(Context.Guild.Id);
             var response = $"Failed to add this Leave Message...";
             if (!guildAcc.LeaveMessages.Contains(message))
             {
@@ -135,7 +135,7 @@ namespace CommunityBot.Modules
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task RemoveLeaveMessage(int messageIndex)
         {
-            var guildAcc = _globalGuildAccounts.GetGuildAccount(Context.Guild.Id);
+            var guildAcc = _globalGuildAccounts.GetById(Context.Guild.Id);
             var messages = guildAcc.LeaveMessages.ToList();
             var response = $"Failed to remove this Leave Message... Use the number shown in `leave list` next to the `#` sign!";
             if (messages.Count > messageIndex - 1)
@@ -152,7 +152,7 @@ namespace CommunityBot.Modules
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task ListLeaveMessages()
         {
-            var leaveMessages = _globalGuildAccounts.GetGuildAccount(Context.Guild.Id).LeaveMessages;
+            var leaveMessages = _globalGuildAccounts.GetById(Context.Guild.Id).LeaveMessages;
             var embB = new EmbedBuilder().WithTitle("No Leave Messages set yet... add some if you want a message to be shown if someone leaves.");
             if (leaveMessages.Count > 0) embB.WithTitle("Possible Leave Messages:");
 

@@ -103,7 +103,7 @@ namespace CommunityBot.Modules
 
             foreach (SocketGuild guild in Global.Client.Guilds)
             {
-                GuildData savedData = globalGuildAccounts.GetGuildAccount(guild.Id).BotData;
+                GuildData savedData = globalGuildAccounts.GetById(guild.Id).BotData;
                 if (savedData == null)
                 {
                     AddGuild(guild.Id);
@@ -175,7 +175,7 @@ namespace CommunityBot.Modules
 
         private static void StoreData(ulong id, GlobalGuildAccounts globalGuildAccounts)
         {
-            var guildAccount = globalGuildAccounts.GetGuildAccount(id);
+            var guildAccount = globalGuildAccounts.GetById(id);
             guildAccount.Modify(g => g.SetBotData(data.GetGuild(id)), globalGuildAccounts);
         }
 
