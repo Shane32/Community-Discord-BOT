@@ -7,6 +7,6 @@ namespace CommunityBot.Features.GlobalAccounts
 {
     public interface IGlobalUserAccounts : IGlobalAccounts
     {
-        GlobalUserAccount GetUserAccount(ulong userId);
+        GlobalUserAccount GetById(ulong userId);
     }
 }

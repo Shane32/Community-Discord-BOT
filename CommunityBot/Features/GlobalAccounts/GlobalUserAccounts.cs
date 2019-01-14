@@ -53,7 +53,7 @@ namespace CommunityBot.Features.GlobalAccounts
             return true;
         }
         
-        public GlobalUserAccount GetUserAccount(ulong id)
+        public GlobalUserAccount GetById(ulong id)
         {
             return userAccounts.GetOrAdd(id, (key) =>
             {
@@ -65,7 +65,7 @@ namespace CommunityBot.Features.GlobalAccounts
 
         public GlobalUserAccount GetUserAccount(IUser user)
         {
-            return GetUserAccount(user.Id);
+            return GetById(user.Id);
         }
 
         public List<GlobalUserAccount> GetAllAccounts()
@@ -96,7 +96,7 @@ namespace CommunityBot.Features.GlobalAccounts
         {
             foreach (var id in ids)
             {
-                _jsonDataStorage.StoreObject(GetUserAccount(id), Path.Combine(Constants.UserAccountsFolder, $"{id}.json"), useIndentations: true);
+                _jsonDataStorage.StoreObject(GetById(id), Path.Combine(Constants.UserAccountsFolder, $"{id}.json"), useIndentations: true);
             }
         }
     }

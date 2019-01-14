@@ -22,7 +22,7 @@ namespace CommunityBot.NUnit.Tests.FeatureTests.Economy
             };
 
             var globalUserAccountsMock = new Mock<IGlobalUserAccounts>();
-            globalUserAccountsMock.Setup(a => a.GetUserAccount(userId)).Returns(testUser);
+            globalUserAccountsMock.Setup(a => a.GetById(userId)).Returns(testUser);
 
             IDailyMiunies dailyService = new Daily(globalUserAccountsMock.Object);
 
@@ -42,7 +42,7 @@ namespace CommunityBot.NUnit.Tests.FeatureTests.Economy
             };
 
             var globalUserAccountsMock = new Mock<IGlobalUserAccounts>();
-            globalUserAccountsMock.Setup(a => a.GetUserAccount(userId)).Returns(testUser);
+            globalUserAccountsMock.Setup(a => a.GetById(userId)).Returns(testUser);
 
             IDailyMiunies dailyService = new Daily(globalUserAccountsMock.Object);
 

@@ -45,7 +45,7 @@ namespace CommunityBot.Modules
         [Alias("Cash", "Money")]
         public async Task CheckMiunies()
         {
-            var account = _globalUserAccounts.GetUserAccount(Context.User.Id);
+            var account = _globalUserAccounts.GetById(Context.User.Id);
             await ReplyAsync(GetMiuniesReport(account.Miunies, Context.User.Mention));
         }
 
@@ -53,7 +53,7 @@ namespace CommunityBot.Modules
         [Alias("Cash", "Money")]
         public async Task CheckMiuniesOther(IGuildUser target)
         {
-            var account = _globalUserAccounts.GetUserAccount(target.Id);
+            var account = _globalUserAccounts.GetById(target.Id);
             await ReplyAsync(GetMiuniesReport(account.Miunies, target.Mention));
         }
 
@@ -166,7 +166,7 @@ namespace CommunityBot.Modules
                 await ReplyAsync("You can' spin for that amount of Miunies.\nAND YOU KNOW IT!");
                 return;
             }
-            var account = _globalUserAccounts.GetUserAccount(Context.User.Id);
+            var account = _globalUserAccounts.GetById(Context.User.Id);
             if (account.Miunies < amount)
             {
                 await ReplyAsync($"Sorry but it seems like you don't have enough Minuies... You only have {account.Miunies}.");

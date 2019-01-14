@@ -26,7 +26,7 @@ namespace CommunityBot.Modules
                 return;
             }
 
-            var account = _globalUserAccounts.GetUserAccount(Context.User.Id);
+            var account = _globalUserAccounts.GetById(Context.User.Id);
             account.TimeZone = $"{timeZone.Result}";
             _globalUserAccounts.SaveAccounts(Context.User.Id);
 

@@ -15,7 +15,7 @@ namespace CommunityBot.Features.Economy
         
         public void GetDaily(ulong userId)
         {
-            var account = globalUserAccountProvider.GetUserAccount(userId);
+            var account = globalUserAccountProvider.GetById(userId);
             var sinceLastDaily = DateTime.UtcNow - account.LastDaily;
 
             if (sinceLastDaily.TotalHours < 24)

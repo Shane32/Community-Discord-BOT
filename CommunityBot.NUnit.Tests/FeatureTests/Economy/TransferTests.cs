@@ -49,7 +49,7 @@ namespace CommunityBot.NUnit.Tests.FeatureTests.Economy
             var discordClientMock = GetDiscordSocketClientWithSelfUser(100);
             var globalUserAccountProviderMock = new Mock<IGlobalUserAccounts>();
             globalUserAccountProviderMock
-                .Setup(m => m.GetUserAccount(userId))
+                .Setup(m => m.GetById(userId))
                 .Returns(new GlobalUserAccount(userId) {Miunies = maxMiunies});
             var miuniesTransfer = new Transfer(globalUserAccountProviderMock.Object, discordClientMock.Object);
 
@@ -77,10 +77,10 @@ namespace CommunityBot.NUnit.Tests.FeatureTests.Economy
             var discordClientMock = GetDiscordSocketClientWithSelfUser(2);
             var globalUserAccountProviderMock = new Mock<IGlobalUserAccounts>();
             globalUserAccountProviderMock
-                .Setup(m => m.GetUserAccount(userId))
+                .Setup(m => m.GetById(userId))
                 .Returns(sourceUser);
             globalUserAccountProviderMock
-                .Setup(m => m.GetUserAccount(targetUserId))
+                .Setup(m => m.GetById(targetUserId))
                 .Returns(targetUser);
             var miuniesTransfer = new Transfer(globalUserAccountProviderMock.Object, discordClientMock.Object);
 

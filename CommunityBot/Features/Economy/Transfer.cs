@@ -21,11 +21,11 @@ namespace CommunityBot.Features.Economy
             
             if (targetUserId == discordClient.GetCurrentUser().Id) { throw new InvalidOperationException(Constants.ExTransferToMiunie); }
 
-            var transferSource = globalUserAccountProvider.GetUserAccount(sourceUserId);
+            var transferSource = globalUserAccountProvider.GetById(sourceUserId);
 
             if (transferSource.Miunies < amount) { throw new InvalidOperationException(Constants.ExTransferNotEnoughFunds); }
 
-            var transferTarget = globalUserAccountProvider.GetUserAccount(targetUserId);
+            var transferTarget = globalUserAccountProvider.GetById(targetUserId);
 
             transferSource.Miunies -= amount;
             transferTarget.Miunies += amount;

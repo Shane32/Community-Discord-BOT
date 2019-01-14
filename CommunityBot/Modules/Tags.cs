@@ -89,7 +89,7 @@ namespace CommunityBot.Modules
                                  "Try the `help ptag` command to get more information on how to use this command.");
                 return;
             }
-            var userAcc = _globalUserAccounts.GetUserAccount(Context.User.Id);
+            var userAcc = _globalUserAccounts.GetById(Context.User.Id);
             var response = TagFunctions.GetTag(tagName, userAcc);
             await ReplyAsync(response);
         }
@@ -97,7 +97,7 @@ namespace CommunityBot.Modules
         [Command("new"), Alias("add"), Remarks("Adds a new (not yet existing) tag to your collection")]
         public async Task AddTag(string tagName, [Remainder] string tagContent)
         {
-            var userAcc = _globalUserAccounts.GetUserAccount(Context.User.Id);
+            var userAcc = _globalUserAccounts.GetById(Context.User.Id);
             var response = TagFunctions.AddTag(tagName, tagContent, _globalUserAccounts, userAcc);
             await ReplyAsync(response);
         }
@@ -105,7 +105,7 @@ namespace CommunityBot.Modules
         [Command("update"), Remarks("Updates an existing tag of yours")]
         public async Task UpdateTag(string tagName, [Remainder] string tagContent)
         {
-            var userAcc = _globalUserAccounts.GetUserAccount(Context.User.Id);
+            var userAcc = _globalUserAccounts.GetById(Context.User.Id);
             var response = TagFunctions.UpdateTag(tagName, tagContent, _globalUserAccounts, userAcc);
             await ReplyAsync(response);
         }
@@ -113,7 +113,7 @@ namespace CommunityBot.Modules
         [Command("remove"), Remarks("Removes an existing tag of yours")]
         public async Task RemoveTag(string tagName)
         {
-            var userAcc = _globalUserAccounts.GetUserAccount(Context.User.Id);
+            var userAcc = _globalUserAccounts.GetById(Context.User.Id);
             var response = TagFunctions.RemoveTag(tagName, _globalUserAccounts, userAcc);
             await ReplyAsync(response);
         }
@@ -121,7 +121,7 @@ namespace CommunityBot.Modules
         [Command("list"), Remarks("Show all your tags")]
         public async Task ListTags()
         {
-            var userAcc = _globalUserAccounts.GetUserAccount(Context.User.Id);
+            var userAcc = _globalUserAccounts.GetById(Context.User.Id);
             var emb = TagFunctions.BuildTagListEmbed(userAcc);
             await ReplyAsync("", false, emb);
         }

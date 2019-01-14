@@ -76,7 +76,7 @@ namespace CommunityBot.Modules
 
             var newReminder = new ReminderEntry(timeDateTime, reminderString);
 
-            var account = _globalUserAccounts.GetUserAccount(Context.User.Id);
+            var account = _globalUserAccounts.GetById(Context.User.Id);
 
             account.Reminders.Add(newReminder);
             _globalUserAccounts.SaveAccounts(Context.User.Id);
@@ -130,7 +130,7 @@ namespace CommunityBot.Modules
                 return;
             }
 
-            var account = _globalUserAccounts.GetUserAccount(Context.User.Id);
+            var account = _globalUserAccounts.GetById(Context.User.Id);
             var timezone = account.TimeZone ?? "UTC";
             var tz = TimeZoneInfo.FindSystemTimeZoneById($"{timezone}");
             var timeString = splittedArgs[splittedArgs.Length - 1];
@@ -163,7 +163,7 @@ namespace CommunityBot.Modules
         [Command("List"), Priority(2), Remarks("List all your reminders")]
         public async Task ShowReminders()
         {
-            var reminders = _globalUserAccounts.GetUserAccount(Context.User.Id).Reminders;
+            var reminders = _globalUserAccounts.GetById(Context.User.Id).Reminders;
             var embB = new EmbedBuilder()
                 .WithTitle("Your Reminders (Times are in UTC / GMT+0)")
                 .WithFooter("Did you know? " + Global.GetRandomDidYouKnow())
@@ -181,7 +181,7 @@ namespace CommunityBot.Modules
         [Command("Delete"), Priority(2), Remarks("Delete one of your reminders")]
         public async Task DeleteReminder(int index)
         {
-            var reminders = _globalUserAccounts.GetUserAccount(Context.User.Id).Reminders;
+            var reminders = _globalUserAccounts.GetById(Context.User.Id).Reminders;
             var responseString = "Duhh... maybe use `remind list` before you try to " +
                                  "delete a reminder that doesn't even exists?!";
             if (index > 0 && index <= reminders.Count)

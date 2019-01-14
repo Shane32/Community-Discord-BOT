@@ -21,7 +21,7 @@ namespace CommunityBot.Handlers
             if (msg.Channel == msg.Author.GetOrCreateDMChannelAsync()) return;            
             if (msg.Author.IsBot) return;
             
-            var userAcc = _globalUserAccounts.GetUserAccount(msg.Author.Id);
+            var userAcc = _globalUserAccounts.GetById(msg.Author.Id);
             DateTime now = DateTime.UtcNow;
 
             // Check if message is long enough and if the coolown of the reward is up - if not return
