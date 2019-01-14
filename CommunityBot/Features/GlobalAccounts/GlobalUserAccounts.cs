@@ -63,7 +63,7 @@ namespace CommunityBot.Features.GlobalAccounts
             });
         }
 
-        public GlobalUserAccount GetUserAccount(IUser user)
+        public GlobalUserAccount GetFromDiscordUser(IUser user)
         {
             return GetById(user.Id);
         }

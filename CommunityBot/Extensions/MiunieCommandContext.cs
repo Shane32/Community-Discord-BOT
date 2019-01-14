@@ -16,7 +16,7 @@ namespace CommunityBot.Extensions
 
             if (User is null) { return; }
 
-            UserAccount = globalUserAccounts.GetUserAccount(User);
+            UserAccount = globalUserAccounts.GetFromDiscordUser(User);
         }
 
         public void RegisterCommandUsage()

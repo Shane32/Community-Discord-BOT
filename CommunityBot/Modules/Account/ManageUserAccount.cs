@@ -25,15 +25,12 @@ namespace CommunityBot.Modules.Account
         {
             user = user ?? (SocketGuildUser) Context.User;
 
-            var userAccount = _globalUserAccounts.GetUserAccount(user);
+            var userAccount = _globalUserAccounts.GetFromDiscordUser(user);
             
             var embed = new EmbedBuilder()
                 .WithAuthor($"{user.Username}'s account information", user.GetAvatarUrl())
                 .AddField("Joined at: ", user.JoinedAt.Value.DateTime.ToString())
                 .AddField("**Last message**", userAccount.LastMessage.ToString(), true)
-                .AddField("**Last daily: **", userAccount.LastDaily.ToString(), true)
-                .AddField("**Miunies**:", userAccount.Miunies, true)
-                .AddField("**Number of tags**:", userAccount.Tags.Count, true)
                 .AddField("**Number of reminders**: ", userAccount.Reminders.Count, true)
                 .WithColor(Color.Blue)
                 .WithCurrentTimestamp()
