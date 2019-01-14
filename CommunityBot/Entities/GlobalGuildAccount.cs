@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using CommunityBot.Features.GlobalAccounts;
-using CommunityBot.Features.RoleAssignment;
 using Discord;
 
 namespace CommunityBot.Entities

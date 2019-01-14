@@ -8,7 +8,6 @@ using CommunityBot.Handlers;
 using Microsoft.Extensions.DependencyInjection;
 using CommunityBot.Features;
 using Discord.Commands;
-using CommunityBot.Features.Lists;
 using CommunityBot.Features.GlobalAccounts;
 using CommunityBot.Helpers;
 using CommunityBot.Features.RepeatedTasks;
@@ -66,7 +65,6 @@ namespace CommunityBot
                 return DiscordClientFactory.GetBySettings(appSettings);
             });
             serviceCollection.AddSingleton<IDataStorage, JsonDataStorage>();
-            serviceCollection.AddSingleton<ListManager>();
             serviceCollection.AddSingleton<IGlobalUserAccounts, GlobalUserAccounts>(); //todo: delete
 
             serviceCollection.AddSingleton<GlobalGuildAccounts>();

@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using CommunityBot.Configuration;
 using CommunityBot.Features;
 using CommunityBot.Features.GlobalAccounts;
-using CommunityBot.Features.Lists;
 using CommunityBot.Helpers;
 using CommunityBot.Modules;
 using Discord;
@@ -25,17 +24,15 @@ namespace CommunityBot.Handlers
         private readonly CommandHandler _commandHandler;
         private readonly ApplicationSettings _applicationSettings;
         private readonly Logger _logger;
-        private readonly ListManager _listManager;
         private readonly RepeatedTaskFunctions _repeatedTaskFunctions;
         private readonly GlobalGuildAccounts _globalGuildAccounts;
 
-        public DiscordEventHandler(Logger logger, DiscordSocketClient client, CommandHandler commandHandler, ApplicationSettings applicationSettings, ListManager listManager, RepeatedTaskFunctions repeatedTaskFunctions, GlobalGuildAccounts globalGuildAccounts)
+        public DiscordEventHandler(Logger logger, DiscordSocketClient client, CommandHandler commandHandler, ApplicationSettings applicationSettings, RepeatedTaskFunctions repeatedTaskFunctions, GlobalGuildAccounts globalGuildAccounts)
         {
             _logger = logger;
             _client = client;
             _commandHandler = commandHandler;
             _applicationSettings = applicationSettings;
-            _listManager = listManager;
             _repeatedTaskFunctions = repeatedTaskFunctions;
             _globalGuildAccounts = globalGuildAccounts;
         }
@@ -194,7 +191,7 @@ namespace CommunityBot.Handlers
             
             var user = _client.Guilds.First().GetUser(reaction.UserId);
             var roleIds = user.Roles.Select(r => r.Id).ToArray();
-            (new ListReactionHandler()).HandleReactionAdded(new ListHelper.UserInfo(user.Id, roleIds), _listManager, cacheMessage, reaction);
+            // (new ListReactionHandler()).HandleReactionAdded(new ListHelper.UserInfo(user.Id, roleIds), _listManager, cacheMessage, reaction);
 
         }
 

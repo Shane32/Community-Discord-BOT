@@ -9,7 +9,6 @@ using System.Text;
 using CommunityBot.Helpers;
 using System.Globalization;
 using CommunityBot.Extensions;
-using CommunityBot.Features.Lists;
 using Discord.WebSocket;
 using Discord.Rest;
 
@@ -18,13 +17,11 @@ namespace CommunityBot.Modules
     public class Misc : ModuleBase<MiunieCommandContext>
     {
         private CommandService _service;
-        private readonly ListManager _listManager;
         private int _fieldRange = 10;
 
-        public Misc(CommandService service, ListManager listManager)
+        public Misc(CommandService service)
         {
             _service = service;
-            _listManager = listManager;
         }
 
         [Cooldown(15)]
@@ -242,32 +239,5 @@ namespace CommunityBot.Modules
 
         }
 
-        [Command("List")]
-        [Summary("Manage lists with custom accessibility by role")]
-        public async Task ManageList(params String[] input)
-        {
-            if (input.Length == 0) { return; }
-            var user = Context.User as SocketGuildUser;
-            var roleIds = user.Roles.Select(r => r.Id).ToArray();
-            var availableRoles = Context.Guild.Roles.ToDictionary(r => r.Name, r => r.Id);
-            var output = _listManager.HandleIO(new ListHelper.UserInfo(user.Id, roleIds), availableRoles, Context.Message.Id, input);
-            RestUserMessage message;
-            if (output.permission != ListHelper.ListPermission.PRIVATE)
-            {
-                message = (RestUserMessage)await Context.Channel.SendMessageAsync(output.outputString, false, output.outputEmbed);
-            }
-            else
-            {
-                var dmChannel = await Context.User.GetOrCreateDMChannelAsync();
-                message = (RestUserMessage)await dmChannel.SendMessageAsync(output.outputString, false, output.outputEmbed);
-            }
-            if (output.listenForReactions)
-            {
-                await message.AddReactionAsync(ListHelper.ControlEmojis["up"]);
-                await message.AddReactionAsync(ListHelper.ControlEmojis["down"]);
-                await message.AddReactionAsync(ListHelper.ControlEmojis["check"]);
-                ListManager.ListenForReactionMessages.Add(message.Id, Context.User.Id);
-            }
-        }
     }
 }
