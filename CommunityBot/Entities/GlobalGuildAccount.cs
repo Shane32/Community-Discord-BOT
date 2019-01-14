@@ -13,19 +13,11 @@ namespace CommunityBot.Entities
         }
         public ulong Id { get; }
 
-        public ulong AnnouncementChannelId { get; private set; }
-
         public IReadOnlyList<string> Prefixes { get; set; } = new List<string>();
 
-        public IReadOnlyList<string> WelcomeMessages { get; private set; } = new List<string> { };
-
-        public IReadOnlyList<string> LeaveMessages { get; private set; } = new List<string>();
-        
         public int ServerActivityLog { get; set; }
 
         public ulong LogChannelId { get; set; }
-
-        public string RoleOnJoin { get; set; }
 
         /* Add more values to store */
         
@@ -34,14 +26,8 @@ namespace CommunityBot.Entities
             var settings = new GuildAccountSettings();
             func(settings);
 
-            if (settings.AnnouncementChannelId.IsSpecified)
-                AnnouncementChannelId = settings.AnnouncementChannelId.Value;
             if (settings.Prefixes.IsSpecified)
                 Prefixes = settings.Prefixes.Value;
-            if (settings.WelcomeMessages.IsSpecified)
-                WelcomeMessages = settings.WelcomeMessages.Value;
-            if (settings.LeaveMessages.IsSpecified)
-                LeaveMessages = settings.LeaveMessages.Value;
             globalGuildAccounts.SaveAccounts(Id);
             return this;
         }
@@ -72,20 +58,9 @@ namespace CommunityBot.Entities
     }
     public class GuildAccountSettings
     {
-        public Optional<ulong> AnnouncementChannelId { get; private set; }
-        public GuildAccountSettings SetAnnouncementChannelId(ulong id) { AnnouncementChannelId = id; return this; }
-
         public Optional<List<string>> Prefixes { get; private set; }
         public GuildAccountSettings SetPrefixes(List<string> prefixes) { Prefixes = prefixes; return this; }
 
-        public Optional<List<string>> WelcomeMessages { get; private set; }
-        public GuildAccountSettings SetWelcomeMessages(List<string> welcomeMessages) { WelcomeMessages = welcomeMessages; return this; }
-
-        public Optional<List<string>> LeaveMessages { get; private set; }
-        public GuildAccountSettings SetLeaveMessages(List<string> leaveMessages) { LeaveMessages = leaveMessages; return this; }
-
-        public Optional<Dictionary<string, string>> Tags { get; private set; }
-        public GuildAccountSettings SetTags(Dictionary<string, string> tags) { Tags = tags; return this; }
         
     }
 }

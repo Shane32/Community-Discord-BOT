@@ -107,29 +107,6 @@ namespace CommunityBot.Modules
         }
 
 
-
-        [Command("SetRoleOnJoin")]
-        [Alias("RoleOnJoin")]
-        [RequireUserPermission(GuildPermission.ManageRoles)]
-        public async Task SetRoleOnJoin(string role = null)
-        {
-
-            string text;
-            var guild = _globalGuildAccounts.GetGuildAccount(Context.Guild);
-            if (role == null)
-            {
-                guild.RoleOnJoin = null;
-                text = $"No one will get role on join from me!";
-            }
-            else
-            {
-                guild.RoleOnJoin = role;
-                text = $"Everyone will now be getting {role} role on join!";
-            }
-
-            _globalGuildAccounts.SaveAccounts(Context.Guild.Id);
-            await ReplyAsync(text);
-
-        }
+        
     }
 }
