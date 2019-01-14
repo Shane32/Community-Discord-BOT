@@ -242,63 +242,6 @@ namespace CommunityBot.Modules
 
         }
 
-        [Command("Addition")]
-        [Summary("Adds 2 numbers together.")]
-        public async Task AddAsync(float num1, float num2)
-        {
-            await ReplyAsync($"The Answer To That Is: {num1 + num2}");
-        }
-
-        [Command("Subtract")]
-        [Summary("Subtracts 2 numbers.")]
-        public async Task SubstractAsync(float num1, float num2)
-        {
-            await ReplyAsync($"The Answer To That Is: {num1 - num2}");
-        }
-
-        [Command("Multiply")]
-        [Summary("Multiplys 2 Numbers.")]
-        public async Task MultiplyAsync(float num1, float num2)
-        {
-            await ReplyAsync($"The Answer To That Is {num1 * num2}");
-        }
-
-        [Command("Divide")]
-        [Summary("Divides 2 Numbers.")]
-        public async Task DivideAsync(float num1, float num2)
-        {
-            await ReplyAsync($"The Answer To That Is: {num1 / num2}");
-        }
-        
-        [Command("Math")]
-        [Summary("Computes mathematical operations.")]
-        public async Task Computate(params String[] input)
-        {
-            StringBuilder word = new StringBuilder();
-            for (int i = 0; i < input.Length; i++)
-            {
-                char[] inputWithoutSpaces = input.ElementAt(i).Where(c => !Char.IsWhiteSpace(c)).ToArray();
-                for (int j = 0; j < inputWithoutSpaces.Count(); j++)
-                {
-                    word.Append(inputWithoutSpaces[j]);
-                }
-
-                input[i] = word.ToString();
-                word = new StringBuilder();
-                if (input.ElementAt(i).Length > 2)
-                {
-                    input[i] = Operations.PerformComputation(input[i]).ToString(CultureInfo.CurrentCulture);
-                }
-            }
-            StringBuilder sentence = new StringBuilder();
-            for (int i = 0; i < input.Length; i++)
-            {
-                sentence.Append(input[i]);
-            }
-
-            await ReplyAsync($"{Operations.PerformComputation(sentence.ToString())}");
-        }
-
         [Command("List")]
         [Summary("Manage lists with custom accessibility by role")]
         public async Task ManageList(params String[] input)
