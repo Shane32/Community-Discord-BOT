@@ -25,7 +25,7 @@ namespace CommunityBot.Modules.RoleAssignments
         [Remarks("Returns the current state of RoleByPhrase lists and relations.")]
         public async Task RbpStatus()
         {
-            var rbp = _globalGuildAccounts.GetGuildAccount(Context.Guild).RoleByPhraseSettings;
+            var rbp = _globalGuildAccounts.GetFromDiscordGuild(Context.Guild).RoleByPhraseSettings;
 
             var phrases = rbp.Phrases.Any() ? string.Join("\n", rbp.Phrases.Select(p => $"({rbp.Phrases.IndexOf(p)}) - {p}")) : "No phrases stored\nAdd one with `rbp addPhrase YOUR-PHRASE`";
             var roles = rbp.RolesIds.Any() ? string.Join("\n", rbp.RolesIds.Select(r => $"({rbp.RolesIds.IndexOf(r)}) - {Context.Guild.GetRole(r).Name}")) : "No roles stored\nAdd one with `rbp addRole @SomeRole`";

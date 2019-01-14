@@ -19,7 +19,7 @@ namespace CommunityBot.Modules
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task SetServerActivivtyLogOff()
         {
-            var guild = _globalGuildAccounts.GetGuildAccount(Context.Guild);
+            var guild = _globalGuildAccounts.GetFromDiscordGuild(Context.Guild);
             guild.LogChannelId = 0;
             guild.ServerActivityLog = 0;
             _globalGuildAccounts.SaveAccounts(Context.Guild.Id);
@@ -40,7 +40,7 @@ namespace CommunityBot.Modules
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task SetServerActivivtyLog(ulong logChannel = 0)
         {
-            var guild = _globalGuildAccounts.GetGuildAccount(Context.Guild);
+            var guild = _globalGuildAccounts.GetFromDiscordGuild(Context.Guild);
 
             if (logChannel != 0)
             {
@@ -115,7 +115,7 @@ namespace CommunityBot.Modules
         {
 
             string text;
-            var guild = _globalGuildAccounts.GetGuildAccount(Context.Guild);
+            var guild = _globalGuildAccounts.GetFromDiscordGuild(Context.Guild);
             if (role == null)
             {
                 guild.RoleOnJoin = null;

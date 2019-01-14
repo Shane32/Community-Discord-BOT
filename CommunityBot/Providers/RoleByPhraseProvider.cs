@@ -20,7 +20,7 @@ namespace CommunityBot.Providers
 
         public RoleByPhraseOperationResult AddPhrase(IGuild guild, string phrase)
         {
-            var guildSettings = _globalGuildAccounts.GetGuildAccount(guild);
+            var guildSettings = _globalGuildAccounts.GetFromDiscordGuild(guild);
 
             try
             {
@@ -40,7 +40,7 @@ namespace CommunityBot.Providers
 
         public RoleByPhraseOperationResult AddRole(IGuild guild, IRole role)
         {
-            var guildSettings = _globalGuildAccounts.GetGuildAccount(guild);
+            var guildSettings = _globalGuildAccounts.GetFromDiscordGuild(guild);
 
             if (guild.GetRole(role.Id) is null) return RoleByPhraseOperationResult.Failed;
 
@@ -62,7 +62,7 @@ namespace CommunityBot.Providers
 
         public RoleByPhraseOperationResult ForceRelation(IGuild guild, string phrase, IRole role)
         {
-            var guildSettings = _globalGuildAccounts.GetGuildAccount(guild);
+            var guildSettings = _globalGuildAccounts.GetFromDiscordGuild(guild);
 
             if (guild.GetRole(role.Id) is null) return RoleByPhraseOperationResult.Failed;
 
@@ -86,7 +86,7 @@ namespace CommunityBot.Providers
 
         public RelationCreationResult CreateRelation(IGuild guild, int phraseIndex, int roleIdIndex)
         {
-            var guildSettings = _globalGuildAccounts.GetGuildAccount(guild);
+            var guildSettings = _globalGuildAccounts.GetFromDiscordGuild(guild);
 
             try
             {
@@ -110,7 +110,7 @@ namespace CommunityBot.Providers
 
         public void RemovePhrase(IGuild guild, int phraseIndex)
         {
-            var guildSettings = _globalGuildAccounts.GetGuildAccount(guild);
+            var guildSettings = _globalGuildAccounts.GetFromDiscordGuild(guild);
 
             guildSettings.RoleByPhraseSettings.RemovePhraseByIndex(phraseIndex);
             _globalGuildAccounts.SaveAccounts();
@@ -118,7 +118,7 @@ namespace CommunityBot.Providers
 
         public void RemoveRole(IGuild guild, int roleIdIndex)
         {
-            var guildSettings = _globalGuildAccounts.GetGuildAccount(guild);
+            var guildSettings = _globalGuildAccounts.GetFromDiscordGuild(guild);
 
             guildSettings.RoleByPhraseSettings.RemoveRoleIdByIndex(roleIdIndex);
             _globalGuildAccounts.SaveAccounts();
@@ -126,7 +126,7 @@ namespace CommunityBot.Providers
 
         public void RemoveRelation(IGuild guild, int phraseIndex, int roleIdIndex)
         {
-            var guildSettings = _globalGuildAccounts.GetGuildAccount(guild);
+            var guildSettings = _globalGuildAccounts.GetFromDiscordGuild(guild);
 
             guildSettings.RoleByPhraseSettings.RemoveRelation(phraseIndex, roleIdIndex);
             _globalGuildAccounts.SaveAccounts();
@@ -134,7 +134,7 @@ namespace CommunityBot.Providers
 
         public async Task EvaluateMessage(IGuild guild, string message, IGuildUser sender)
         {
-            var guildSettings = _globalGuildAccounts.GetGuildAccount(guild);
+            var guildSettings = _globalGuildAccounts.GetFromDiscordGuild(guild);
 
             var triggeredPhrases = guildSettings.RoleByPhraseSettings.Phrases.Where(message.Contains).ToList();
 

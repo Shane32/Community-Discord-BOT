@@ -40,7 +40,7 @@ namespace CommunityBot.Features.GlobalAccounts
             });
         }
 
-        public GlobalGuildAccount GetGuildAccount(IGuild guild)
+        public GlobalGuildAccount GetFromDiscordGuild(IGuild guild)
         {
             return GetById(guild.Id);
         }
