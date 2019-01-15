@@ -5,12 +5,12 @@ using Discord.WebSocket;
 
 namespace CommunityBot.Extensions
 {
-    public class MiunieCommandContext : SocketCommandContext
+    public class BotCommandContext : SocketCommandContext
     {
         public GlobalUserAccount UserAccount { get; }
         private readonly GlobalUserAccounts _globalUserAccounts;
         
-        public MiunieCommandContext(DiscordSocketClient client, SocketUserMessage msg, GlobalUserAccounts globalUserAccounts) : base(client, msg)
+        public BotCommandContext(DiscordSocketClient client, SocketUserMessage msg, GlobalUserAccounts globalUserAccounts) : base(client, msg)
         {
             this._globalUserAccounts = globalUserAccounts;
 

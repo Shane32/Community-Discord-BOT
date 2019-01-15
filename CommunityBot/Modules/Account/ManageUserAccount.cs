@@ -12,7 +12,7 @@ using Discord.WebSocket;
 namespace CommunityBot.Modules.Account
 {
     [Group("account")]
-    public class ManageUserAccount : ModuleBase<MiunieCommandContext>
+    public class ManageUserAccount : ModuleBase<BotCommandContext>
     {
         private readonly GlobalUserAccounts _globalUserAccounts;
         public ManageUserAccount (GlobalUserAccounts globalUserAccounts)

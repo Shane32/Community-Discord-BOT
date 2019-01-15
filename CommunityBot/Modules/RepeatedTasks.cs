@@ -9,7 +9,7 @@ namespace CommunityBot.Modules
 {
     [Group("Tasks"), Remarks("Settings for the repeated task that run in the background")] 
     [Alias("Task", "T")]
-    public class RepeatedTasks : ModuleBase<MiunieCommandContext>
+    public class RepeatedTasks : ModuleBase<BotCommandContext>
     {
         public readonly RepeatedTaskHandler _repeatedTaskHandler;
 

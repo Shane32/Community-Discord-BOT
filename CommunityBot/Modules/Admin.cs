@@ -12,7 +12,7 @@ using CommunityBot.Preconditions;
 
 namespace CommunityBot.Modules
 {
-    public class Admin : ModuleBase<MiunieCommandContext>
+    public class Admin : ModuleBase<BotCommandContext>
     {
         private static readonly OverwritePermissions denyOverwrite = new OverwritePermissions(addReactions: PermValue.Deny, sendMessages: PermValue.Deny, attachFiles: PermValue.Deny);
 

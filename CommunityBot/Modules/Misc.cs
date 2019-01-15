@@ -14,7 +14,7 @@ using Discord.Rest;
 
 namespace CommunityBot.Modules
 {
-    public class Misc : ModuleBase<MiunieCommandContext>
+    public class Misc : ModuleBase<BotCommandContext>
     {
         private CommandService _service;
         private int _fieldRange = 10;

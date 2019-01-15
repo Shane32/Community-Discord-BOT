@@ -6,7 +6,7 @@ using Discord.Commands;
 
 namespace CommunityBot.Modules
 {
-    public class ServerSetup : ModuleBase<MiunieCommandContext>
+    public class ServerSetup : ModuleBase<BotCommandContext>
     {
         private readonly GlobalGuildAccounts _globalGuildAccounts;
 

@@ -43,7 +43,7 @@ namespace CommunityBot.Modules
     /// </summary>
     [Group("Reminder"), Alias("Remind", "r")]
     [Summary("Tell the bot to remind you in some amount of time. The bot will send you a DM with the text you specified.")]
-    public class Reminder : ModuleBase<MiunieCommandContext>
+    public class Reminder : ModuleBase<BotCommandContext>
     {
         private readonly GlobalUserAccounts _globalUserAccounts;
 

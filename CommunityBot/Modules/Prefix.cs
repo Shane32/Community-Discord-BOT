@@ -9,7 +9,7 @@ namespace CommunityBot.Modules
 {
     [Group("Prefix"), Alias("Prefixes"), Summary("Setting for the Bots prefix on this server")]
     [RequireContext(ContextType.Guild)]
-    public class Prefix : ModuleBase<MiunieCommandContext>
+    public class Prefix : ModuleBase<BotCommandContext>
     {
         private readonly GlobalGuildAccounts _globalGuildAccounts;
         public Prefix(GlobalGuildAccounts globalGuildAccounts)

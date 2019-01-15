@@ -37,7 +37,7 @@ namespace CommunityBot.Handlers
             if (!(s is SocketUserMessage msg)) { return; }
             if (msg.Channel is SocketDMChannel) { return; }
             if (msg.Author.IsBot) { return; }
-            var context = new MiunieCommandContext(_client, msg, _globalUserAccounts);
+            var context = new BotCommandContext(_client, msg, _globalUserAccounts);
 
             var argPos = 0;
             if (msg.HasMentionPrefix(_client.CurrentUser, ref argPos) || CheckPrefix(ref argPos, context))

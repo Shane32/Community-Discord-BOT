@@ -6,7 +6,7 @@ using Discord;
 
 namespace CommunityBot.Modules
 {
-    public class Basics : ModuleBase<MiunieCommandContext>
+    public class Basics : ModuleBase<BotCommandContext>
     {
         [Command("Hello")]
         [Cooldown(5)]

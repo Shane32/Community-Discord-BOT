@@ -7,7 +7,7 @@ using Ofl.Google.Maps.TimeZone;
 
 namespace CommunityBot.Modules
 {
-   public class SetTimeZone : ModuleBase<MiunieCommandContext>
+   public class SetTimeZone : ModuleBase<BotCommandContext>
     {
         private readonly GlobalUserAccounts _globalUserAccounts;
 
