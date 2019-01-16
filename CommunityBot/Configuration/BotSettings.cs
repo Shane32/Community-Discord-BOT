@@ -34,25 +34,5 @@ namespace CommunityBot.Configuration
             }
         }
 
-        // SaveSettings serves no purpose, unless other settings are added back into BotConfig
-        //
-        /*
-        private ActionResult SaveSettings()
-        {
-            var result = new ActionResult();
-
-            try
-            {
-                jsonDataStorage.StoreObject(config, configFile);
-            }
-            catch (Exception)
-            {
-                result.AddAlert(new Alert("Settings error", "Could not save the Settings", LevelEnum.Exception));
-            }
-
-            return result;
-        }
-        */
-
     }
 }
