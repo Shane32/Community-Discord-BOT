@@ -13,10 +13,7 @@ namespace CommunityBot
     public static class Global
     {
         internal static DiscordSocketClient Client { get; set; }
-        internal static Dictionary<ulong, string> MessagesIdToTrack { get; set; }
-        internal static Random Rng { get; set; } = new Random();
         internal static readonly String version = Assembly.GetExecutingAssembly().GetName().Version.ToString().TrimEnd('0').TrimEnd('.');
-        internal static bool Headless = false;
         // Global Helper methods
 
         public static string ReplacePlacehoderStrings(this string messageString, IGuildUser user = null)

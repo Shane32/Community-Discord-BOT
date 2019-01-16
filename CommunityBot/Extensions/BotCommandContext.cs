@@ -14,18 +14,8 @@ namespace CommunityBot.Extensions
         {
             this._globalUserAccounts = globalUserAccounts;
 
-            if (User is null) { return; }
-
-            UserAccount = globalUserAccounts.GetUserAccount(User);
+            UserAccount = User == null ? null : globalUserAccounts.GetUserAccount(User);
         }
 
-        public void RegisterCommandUsage()
-        {
-            var commandUsedInformation = new CommandInformation(Message.Content, Message.CreatedAt.DateTime);
-            
-            UserAccount.AddCommandToHistory(commandUsedInformation);
-
-            _globalUserAccounts.SaveAccounts(UserAccount.Id);
-        }
     }
 }

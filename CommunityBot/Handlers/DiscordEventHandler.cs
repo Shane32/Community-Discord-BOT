@@ -79,10 +79,7 @@ namespace CommunityBot.Handlers
             // THIS ONE IS AN EXCEPTION!
             // I don't know how we should handle contidional 
             // subscription to an event otherwise...
-            if (!Global.Headless)
-            {
-                _client.Log += _logger.Log;
-            }
+            _client.Log += _logger.Log;
         }
 
         private async Task ChannelCreated(SocketChannel channel)

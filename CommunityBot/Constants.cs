@@ -11,6 +11,5 @@ namespace CommunityBot
         internal static readonly string LogFolder = "logs";
         internal static readonly string InvisibleString = "\u200b";
         public static readonly int MinTimerIntervall = 3000;
-        public const int MaxCommandHistoryCapacity = 5;
     }
 }

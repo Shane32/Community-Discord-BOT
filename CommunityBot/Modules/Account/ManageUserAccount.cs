@@ -30,7 +30,6 @@ namespace CommunityBot.Modules.Account
             var embed = new EmbedBuilder()
                 .WithAuthor($"{user.Username}'s account information", user.GetAvatarUrl())
                 .AddField("Joined at: ", user.JoinedAt.Value.DateTime.ToString())
-                .AddField("**Last message**", userAccount.LastMessage.ToString(), true)
                 .AddField("**Number of reminders**: ", userAccount.Reminders.Count, true)
                 .WithColor(Color.Blue)
                 .WithCurrentTimestamp()
@@ -41,19 +40,6 @@ namespace CommunityBot.Modules.Account
             await Context.Channel.SendMessageAsync(Context.User.Mention, false, embed);
         }
 
-        [Command("ShowCommandHistory"), Alias("CommandHistory")]
-        public async Task ShowCommandHistory()
-        {            
-            await Context.Channel.SendMessageAsync(GetCommandHistory(Context.UserAccount));
-        }
-        
-        //Could be in the extended ModuleBase, with a few changes
-        private string GetCommandHistory(GlobalUserAccount userAccount)
-        {
-            var commandHistory = userAccount.CommandHistory.Select(cH => $"{cH.UsageDate.ToString("G")} {cH.Command}");
-            return String.Join("\n", commandHistory); //Return the command history separated by line
-        }
-        
         [Command("GetAllMyAccountData"), Alias("GetMyData", "MyData")]
         public async Task GetAccountFile()
         {

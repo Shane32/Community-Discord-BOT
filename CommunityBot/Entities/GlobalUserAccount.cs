@@ -13,25 +13,8 @@ namespace CommunityBot.Entities
 
         public ulong Id { get; }
 
-        public DateTime LastMessage { get; set; } = DateTime.UtcNow;
-
         public List<ReminderEntry> Reminders { get; internal set; } = new List<ReminderEntry>();
 
-        private List<CommandInformation> _commandHistory { get; } = new List<CommandInformation>();
-
-        public ReadOnlyCollection<CommandInformation> CommandHistory { get; private set; }
-
-        public void AddCommandToHistory(CommandInformation commandInformation)
-        {
-            _commandHistory.Add(commandInformation);
-            if (_commandHistory.Count > Constants.MaxCommandHistoryCapacity)
-            {
-                _commandHistory.RemoveAt(0); //remove the first element, ensures the list always got 5 elements maximum
-            }
-            
-            CommandHistory = new ReadOnlyCollection<CommandInformation>(_commandHistory);
-        }
-        
         public string TimeZone { get; set; } // Please note, TimeZone ID works for LINUX, but for windows we need TimeZone NAME
         /* Add more values to store */
 

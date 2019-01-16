@@ -32,7 +32,7 @@ namespace CommunityBot
                 _serviceProvider.GetRequiredService<DiscordEventHandler>().InitDiscordEvents();
                 await _serviceProvider.GetRequiredService<CommandHandler>().InitializeAsync();
 
-                while (!await AttemptLogin()) { }
+                await AttemptLogin();
 
                 await _client.StartAsync();
 
@@ -75,19 +75,18 @@ namespace CommunityBot
             serviceCollection.AddSingleton<RepeatedTaskHandler>();
         }
 
-        private static async Task<bool> AttemptLogin()
+        private static async Task AttemptLogin()
         {
             BotSettings botSettings = _serviceProvider.GetRequiredService<BotSettings>();
             try
             {
                 await _client.LoginAsync(TokenType.Bot, botSettings.config.Token);
-                return true;
             }
             catch (HttpRequestException e)
             {
                 if (e.InnerException == null)
                 {
-                    Console.WriteLine($"An HTTP Request exception occurred.\nMessage:\n{e.Message}");
+                    Global.WriteColoredLine($"An HTTP Request exception occurred.\nMessage:\n{e.Message}", ConsoleColor.Red);
                 }
                 else
                 {
@@ -95,29 +94,15 @@ namespace CommunityBot
                         ConsoleColor.Red);
                 }
 
-                var shouldTryAgain = GetTryAgainRequested();
-                if (!shouldTryAgain) Environment.Exit(0);
-                return false;
+                Environment.Exit(0);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                Console.WriteLine("An exception occurred. Your token might not be configured, or it might be wrong.");
+                Global.WriteColoredLine($"An exception occurred.\nMessage:\n{e.Message}\n\nYour token might not be configured, or it might be wrong.", ConsoleColor.Red);
 
-                var shouldTryAgain = GetTryAgainRequested();
-                if (!shouldTryAgain) Environment.Exit(0);
-                botSettings.LoadConfig();
-                return false;
+                Environment.Exit(0);
             }
         }
 
-        private static bool GetTryAgainRequested()
-        {
-            if (Global.Headless) return false;
-
-            Console.WriteLine("\nDo you want to try again? (y/n)");
-            Global.WriteColoredLine("(not trying again closes the application)\n", ConsoleColor.Yellow);
-
-            return Console.ReadKey().Key == ConsoleKey.Y;
-        }
     }
 }
