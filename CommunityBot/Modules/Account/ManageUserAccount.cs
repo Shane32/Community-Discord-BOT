@@ -109,6 +109,6 @@ namespace CommunityBot.Modules.Account
         }
 
         private bool EvaluateResponse(SocketMessage arg, params String[] options)
-            => options.Any(option => arg.Content.ToLower().Contains(option.ToLower()) && arg.Author == Context.User);
+            => options.Any(option => arg.Content.ToLower().Contains(option.ToLower()) && arg.Author.Id == Context.User.Id);
     }
 }
