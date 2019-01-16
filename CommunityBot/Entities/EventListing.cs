@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CommunityBot.Entities
 {
-    class EventListing
+    public class EventListing
     {
         public string Title { get; set; }
         public string Description { get; set; }

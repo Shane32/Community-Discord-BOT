@@ -72,13 +72,16 @@ namespace CommunityBot.Helpers
             // Waiting for the timeout to run out or the task.Delay to be canceled due to a matched message
             try { await waiter; }
             catch (TaskCanceledException) { }
-            // Remove the function from the 
-            Global.Client.MessageReceived -= OnMessageReceived;
+            finally
+            {
+                // Remove the function from the event handlers list
+                Global.Client.MessageReceived -= OnMessageReceived;
+            }
             return responseMessage;
 
             Task OnMessageReceived(SocketMessage message)
             {
-                if (message.Channel != channel)
+                if (message.Channel.Id != channel.Id || message.Author.IsBot)
                     return Task.CompletedTask;
                 if (filter != null && !filter(message))
                     return Task.CompletedTask;
