@@ -19,11 +19,6 @@ namespace CommunityBot
         internal static bool Headless = false;
         // Global Helper methods
 
-        internal static string GetRandomDidYouKnow()
-        {
-            return Constants.DidYouKnows[Rng.Next(0, Constants.DidYouKnows.Count)];
-        }
-        
         public static string ReplacePlacehoderStrings(this string messageString, IGuildUser user = null)
         {
             var result = messageString;

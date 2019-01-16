@@ -196,8 +196,8 @@ namespace CommunityBot.Modules
                 .WithTitle("Credits")
                 .WithColor(Color.Blue)
                 .WithUrl("https://github.com/discord-bot-tutorial/Community-Discord-BOT")
-                .WithFooter(Global.GetRandomDidYouKnow())
-                // Someone needs to pimp this message... it is lame
+                //.WithFooter(Global.GetRandomDidYouKnow())
+                // Someone needs to redo this message... it is lame
                 .WithDescription("Peter is the one who created me... fleshed me out and taught me how to speak.\n" +
                                  "Everything was organized... my life was good :smiley:\n" +
                                  "And then he let those people lose on me... :scream:\n");
