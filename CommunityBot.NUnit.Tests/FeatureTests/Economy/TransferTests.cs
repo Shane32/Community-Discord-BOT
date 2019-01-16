@@ -17,7 +17,7 @@ namespace CommunityBot.NUnit.Tests.FeatureTests.Economy
         public static void TransferToSameUserThrows()
         {
             const ulong userId = 999777111;
-            var globalUserAccountProviderMock = new Mock<IGlobalUserAccountProvider>();
+            var globalUserAccountProviderMock = new Mock<IGlobalUserAccounts>();
             var discordClientMock = new Mock<IDiscordSocketClient>();
             var miuniesTransfer = new Transfer(globalUserAccountProviderMock.Object, discordClientMock.Object);
 
@@ -32,7 +32,7 @@ namespace CommunityBot.NUnit.Tests.FeatureTests.Economy
             const ulong userId = 555987;
             const ulong thisBotId = 123;
             var discordClientMock = GetDiscordSocketClientWithSelfUser(thisBotId);
-            var globalUserAccountProviderMock = new Mock<IGlobalUserAccountProvider>();
+            var globalUserAccountProviderMock = new Mock<IGlobalUserAccounts>();
             var miuniesTransfer = new Transfer(globalUserAccountProviderMock.Object, discordClientMock.Object);
 
             var exception = Assert.Throws<InvalidOperationException>(() => 
@@ -47,7 +47,7 @@ namespace CommunityBot.NUnit.Tests.FeatureTests.Economy
             const ulong targetUserId = 9000;
             const ulong maxMiunies = 500;
             var discordClientMock = GetDiscordSocketClientWithSelfUser(100);
-            var globalUserAccountProviderMock = new Mock<IGlobalUserAccountProvider>();
+            var globalUserAccountProviderMock = new Mock<IGlobalUserAccounts>();
             globalUserAccountProviderMock
                 .Setup(m => m.GetById(userId))
                 .Returns(new GlobalUserAccount(userId) {Miunies = maxMiunies});
@@ -75,7 +75,7 @@ namespace CommunityBot.NUnit.Tests.FeatureTests.Economy
                 Miunies = targetMiunies
             };
             var discordClientMock = GetDiscordSocketClientWithSelfUser(2);
-            var globalUserAccountProviderMock = new Mock<IGlobalUserAccountProvider>();
+            var globalUserAccountProviderMock = new Mock<IGlobalUserAccounts>();
             globalUserAccountProviderMock
                 .Setup(m => m.GetById(userId))
                 .Returns(sourceUser);
@@ -88,7 +88,7 @@ namespace CommunityBot.NUnit.Tests.FeatureTests.Economy
             
             Assert.AreEqual(sourceMiunies - transferAmount, sourceUser.Miunies);
             Assert.AreEqual(targetMiunies + transferAmount, targetUser.Miunies);
-            globalUserAccountProviderMock.Verify(m => m.SaveByIds(userId, targetUserId), Times.Once);
+            globalUserAccountProviderMock.Verify(m => m.SaveAccounts(userId, targetUserId), Times.Once);
         }
 
         private static Mock<ISelfUser> GetSelfUserMock(ulong id)

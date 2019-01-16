@@ -20,7 +20,7 @@ namespace CommunityBot.Configuration
         private const string LogDestinationArg = "-log=";
         private const string TokenArg = "-token=";
 
-        public ApplicationSettings(string [] args)
+        public ApplicationSettings(string [] args, BotSettings botSettings)
         {
             if (args.Any(arg => helpKeywords.Contains(arg)))
             {
@@ -60,7 +60,7 @@ namespace CommunityBot.Configuration
             var tokenString = args.FirstOrDefault(arg => arg.StartsWith(TokenArg));
             if (string.IsNullOrWhiteSpace(tokenString) == false)
             {
-                BotSettings.config.Token = GetArgumentContent(args, TokenArg);
+                botSettings.config.Token = GetArgumentContent(args, TokenArg);
             }
 
             // Downloading Attachemnts for Activity Logger -att

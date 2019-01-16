@@ -6,19 +6,21 @@ using System.IO;
 
 namespace CommunityBot.Features.GlobalAccounts
 {
-    internal static class GlobalGuildAccounts
+    public class GlobalGuildAccounts : IGlobalAccounts
     {
-        private static readonly ConcurrentDictionary<ulong, GlobalGuildAccount> serverAccounts = new ConcurrentDictionary<ulong, GlobalGuildAccount>();
+        private readonly ConcurrentDictionary<ulong, GlobalGuildAccount> serverAccounts = new ConcurrentDictionary<ulong, GlobalGuildAccount>();
+        private readonly JsonDataStorage _jsonDataStorage;
 
-        static GlobalGuildAccounts()
+        public GlobalGuildAccounts(JsonDataStorage jsonDataStorage)
         {
+            _jsonDataStorage = jsonDataStorage;
             var info = System.IO.Directory.CreateDirectory(Path.Combine(Constants.ResourceFolder,Constants.ServerAccountsFolder));
             var files = info.GetFiles("*.json");
             if (files.Length > 0)
             {
                 foreach (var file in files)
                 {
-                    var server = InversionOfControl.Container.GetInstance<JsonDataStorage>().RestoreObject<GlobalGuildAccount>(Path.Combine(file.Directory.Name, file.Name));
+                    var server = jsonDataStorage.RestoreObject<GlobalGuildAccount>(Path.Combine(file.Directory.Name, file.Name));
                     serverAccounts.TryAdd(server.Id, server);
                 }
             }
@@ -28,25 +30,25 @@ namespace CommunityBot.Features.GlobalAccounts
             }
         }
 
-        internal static GlobalGuildAccount GetGuildAccount(ulong id)
+        public GlobalGuildAccount GetById(ulong id)
         {
             return serverAccounts.GetOrAdd(id, (key) =>
             {
                 var newAccount = new GlobalGuildAccount(id);
-                InversionOfControl.Container.GetInstance<JsonDataStorage>().StoreObject(newAccount, Path.Combine(Constants.ServerAccountsFolder, $"{id}.json"), useIndentations: true);
+                _jsonDataStorage.StoreObject(newAccount, Path.Combine(Constants.ServerAccountsFolder, $"{id}.json"), useIndentations: true);
                 return newAccount;
             });
         }
 
-        internal static GlobalGuildAccount GetGuildAccount(IGuild guild)
+        public GlobalGuildAccount GetFromDiscordGuild(IGuild guild)
         {
-            return GetGuildAccount(guild.Id);
+            return GetById(guild.Id);
         }
 
         /// <summary>
         /// This rewrites ALL ServerAccounts to the harddrive... Strongly recommend to use SaveAccounts(id1, id2, id3...) where possible instead
         /// </summary>
-        internal static void SaveAccounts()
+        public void SaveAccounts()
         {
             foreach (var id in serverAccounts.Keys)
             {
@@ -57,12 +59,11 @@ namespace CommunityBot.Features.GlobalAccounts
         /// <summary>
         /// Saves one or multiple Accounts by provided Ids
         /// </summary>
-        internal static void SaveAccounts(params ulong[] ids)
+        public void SaveAccounts(params ulong[] ids)
         {
-            var dataStorage = InversionOfControl.Container.GetInstance<JsonDataStorage>();
             foreach (var id in ids)
             {
-                dataStorage.StoreObject(GetGuildAccount(id), Path.Combine(Constants.ServerAccountsFolder, $"{id}.json"), useIndentations: true);
+                _jsonDataStorage.StoreObject(GetById(id), Path.Combine(Constants.ServerAccountsFolder, $"{id}.json"), useIndentations: true);
             }
         }
     }

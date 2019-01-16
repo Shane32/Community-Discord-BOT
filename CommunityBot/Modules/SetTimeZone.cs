@@ -9,6 +9,13 @@ namespace CommunityBot.Modules
 {
    public class SetTimeZone : ModuleBase<MiunieCommandContext>
     {
+        private readonly GlobalUserAccounts _globalUserAccounts;
+
+        public SetTimeZone(GlobalUserAccounts globalUserAccounts)
+        {
+            _globalUserAccounts = globalUserAccounts;
+        }
+
         [Command("MyCity")]
         public async Task SetMyCity([Remainder] string city)
         {
@@ -19,9 +26,9 @@ namespace CommunityBot.Modules
                 return;
             }
 
-            var account = GlobalUserAccounts.GetUserAccount(Context.User.Id);
+            var account = _globalUserAccounts.GetById(Context.User.Id);
             account.TimeZone = $"{timeZone.Result}";
-            GlobalUserAccounts.SaveAccounts(Context.User.Id);
+            _globalUserAccounts.SaveAccounts(Context.User.Id);
 
             await ReplyAsync($"We saved it. Your TimeZone is **{timeZone.Result}**");
         }

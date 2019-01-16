@@ -6,9 +6,9 @@ namespace CommunityBot.Features.Economy
 {
     public class Daily : IDailyMiunies
     {
-        private readonly IGlobalUserAccountProvider globalUserAccountProvider;
+        private readonly IGlobalUserAccounts globalUserAccountProvider;
 
-        public Daily(IGlobalUserAccountProvider globalUserAccountProvider)
+        public Daily(IGlobalUserAccounts globalUserAccountProvider)
         {
             this.globalUserAccountProvider = globalUserAccountProvider;
         }
@@ -28,7 +28,7 @@ namespace CommunityBot.Features.Economy
             account.Miunies += Constants.DailyMuiniesGain;
             account.LastDaily = DateTime.UtcNow;
 
-            globalUserAccountProvider.SaveByIds(userId);
+            globalUserAccountProvider.SaveAccounts(userId);
         }
     }
 }

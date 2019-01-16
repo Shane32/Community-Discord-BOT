@@ -4,63 +4,35 @@ using CommunityBot.Helpers;
 
 namespace CommunityBot.Configuration
 {
-    internal static class BotSettings
+    public class BotSettings
     {
-        internal static BotConfig config;
+        internal BotConfig config;
 
-        private static readonly string configFile = "config.json";
+        private readonly string configFile = "config.json";
+        private readonly JsonDataStorage jsonDataStorage;
 
-        static BotSettings()
+        public BotSettings(JsonDataStorage jsonDataStorage)
         {
+            this.jsonDataStorage = jsonDataStorage;
             LoadConfig();
         }
 
-        internal static void LoadConfig()
+        internal void LoadConfig()
         {
-            var dataStorage = InversionOfControl.Container.GetInstance<JsonDataStorage>();
-            if (dataStorage.LocalFileExists(configFile))
+            if (jsonDataStorage.LocalFileExists(configFile))
             {
-                config = dataStorage.RestoreObject<BotConfig>(configFile);
+                config = jsonDataStorage.RestoreObject<BotConfig>(configFile);
             }
             else
             {
                 // Setting up defaults
                 config = new BotConfig()
                 {
-                    Prefix = "$",
                     Token = "YOUR-TOKEN-HERE"
                 };
-                dataStorage.StoreObject(config, configFile, useIndentations: true);
+                jsonDataStorage.StoreObject(config, configFile, useIndentations: true);
             }
         }
 
-        public static ActionResult SetCommandPrefix(string prefix)
-        {
-            var result = new ActionResult();
-            
-            config.Prefix = prefix;
-
-            var saveSettingsResult = SaveSettings();
-
-            result.Merge(saveSettingsResult);
-
-            return result;
-        }
-
-        private static ActionResult SaveSettings()
-        {
-            var result = new ActionResult();
-            
-            try
-            {
-                InversionOfControl.Container.GetInstance<JsonDataStorage>().StoreObject(config, configFile);
-            }
-            catch (Exception)
-            {
-                result.AddAlert(new Alert("Settings error", "Could not save the Settings", LevelEnum.Exception));
-            }
-
-            return result;
-        }
     }
 }

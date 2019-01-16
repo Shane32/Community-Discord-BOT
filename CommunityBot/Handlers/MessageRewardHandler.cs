@@ -5,9 +5,15 @@ using System.Threading.Tasks;
 
 namespace CommunityBot.Handlers
 {
-    public static class MessageRewardHandler
+    public class MessageRewardHandler
     {
-        public async static Task HandleMessageRewards(SocketMessage s)
+        private readonly GlobalUserAccounts _globalUserAccounts;
+        public MessageRewardHandler(GlobalUserAccounts globalUserAccounts)
+        {
+            _globalUserAccounts = globalUserAccounts;
+        }
+
+        public async Task HandleMessageRewards(SocketMessage s)
         {
             var msg = s as SocketUserMessage;
 
@@ -15,7 +21,7 @@ namespace CommunityBot.Handlers
             if (msg.Channel == msg.Author.GetOrCreateDMChannelAsync()) return;            
             if (msg.Author.IsBot) return;
             
-            var userAcc = GlobalUserAccounts.GetUserAccount(msg.Author.Id);
+            var userAcc = _globalUserAccounts.GetById(msg.Author.Id);
             DateTime now = DateTime.UtcNow;
 
             // Check if message is long enough and if the coolown of the reward is up - if not return
@@ -28,7 +34,7 @@ namespace CommunityBot.Handlers
             userAcc.Miunies += (ulong) Global.Rng.Next(Constants.MessagRewardMinMax.Item1, Constants.MessagRewardMinMax.Item2 + 1);
             userAcc.LastMessage = now;
 
-            GlobalUserAccounts.SaveAccounts(msg.Author.Id);
+            _globalUserAccounts.SaveAccounts(msg.Author.Id);
         }
     }
 }

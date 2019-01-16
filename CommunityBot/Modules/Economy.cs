@@ -14,13 +14,15 @@ namespace CommunityBot.Modules
 {
     public class Economy : ModuleBase<MiunieCommandContext>
     {
-        private readonly IDailyMiunies dailyMiunies;
-        private readonly IMiuniesTransfer miuniesTransfer;
+        private readonly IDailyMiunies _dailyMiunies;
+        private readonly IMiuniesTransfer _miuniesTransfer;
+        private readonly GlobalUserAccounts _globalUserAccounts;
 
-        public Economy(IDailyMiunies dailyMiunies, IMiuniesTransfer miuniesTransfer)
+        public Economy(IDailyMiunies dailyMiunies, IMiuniesTransfer miuniesTransfer, GlobalUserAccounts globalUserAccounts)
         {
-            this.dailyMiunies = dailyMiunies;
-            this.miuniesTransfer = miuniesTransfer;
+            _dailyMiunies = dailyMiunies;
+            _miuniesTransfer = miuniesTransfer;
+            _globalUserAccounts = globalUserAccounts;
         }
 
         [Command("Daily"), Remarks("Gives you some Miunies but can only be used once a day")]
@@ -29,7 +31,7 @@ namespace CommunityBot.Modules
         {
             try
             {
-                dailyMiunies.GetDaily(Context.User.Id);
+                _dailyMiunies.GetDaily(Context.User.Id);
                 await ReplyAsync($"Here's {Constants.DailyMuiniesGain} miunies, {Context.User.Mention}! Just for you...");
             }
             catch (InvalidOperationException e)
@@ -43,7 +45,7 @@ namespace CommunityBot.Modules
         [Alias("Cash", "Money")]
         public async Task CheckMiunies()
         {
-            var account = GlobalUserAccounts.GetUserAccount(Context.User.Id);
+            var account = _globalUserAccounts.GetById(Context.User.Id);
             await ReplyAsync(GetMiuniesReport(account.Miunies, Context.User.Mention));
         }
 
@@ -51,7 +53,7 @@ namespace CommunityBot.Modules
         [Alias("Cash", "Money")]
         public async Task CheckMiuniesOther(IGuildUser target)
         {
-            var account = GlobalUserAccounts.GetUserAccount(target.Id);
+            var account = _globalUserAccounts.GetById(target.Id);
             await ReplyAsync(GetMiuniesReport(account.Miunies, target.Mention));
         }
 
@@ -67,7 +69,7 @@ namespace CommunityBot.Modules
 
             var guildUserIds = Context.Guild.Users.Select(user => user.Id);
             // Get only accounts of this server
-            var accounts = GlobalUserAccounts.GetFilteredAccounts(acc => guildUserIds.Contains(acc.Id));
+            var accounts = _globalUserAccounts.GetFilteredAccounts(acc => guildUserIds.Contains(acc.Id));
 
             const int usersPerPage = 9;
             // Calculate the highest accepted page number => amount of pages we need to be able to fit all users in them
@@ -132,7 +134,7 @@ namespace CommunityBot.Modules
         {
             try
             {
-                miuniesTransfer.UserToUser(Context.User.Id, target.Id, amount);
+                _miuniesTransfer.UserToUser(Context.User.Id, target.Id, amount);
                 await ReplyAsync($":white_check_mark: {Context.User.Username} has given {target.Username} {amount} minuies!");
             }
             catch (InvalidOperationException e)
@@ -164,7 +166,7 @@ namespace CommunityBot.Modules
                 await ReplyAsync("You can' spin for that amount of Miunies.\nAND YOU KNOW IT!");
                 return;
             }
-            var account = GlobalUserAccounts.GetUserAccount(Context.User.Id);
+            var account = _globalUserAccounts.GetById(Context.User.Id);
             if (account.Miunies < amount)
             {
                 await ReplyAsync($"Sorry but it seems like you don't have enough Minuies... You only have {account.Miunies}.");
@@ -172,7 +174,7 @@ namespace CommunityBot.Modules
             }
 
             account.Miunies -= amount;
-            GlobalUserAccounts.SaveAccounts(Context.User.Id);
+            _globalUserAccounts.SaveAccounts(Context.User.Id);
 
             var slotEmojis = Global.Slot.Spin();
             var payoutAndFlavour = Global.Slot.GetPayoutAndFlavourText(amount);
@@ -180,7 +182,7 @@ namespace CommunityBot.Modules
             if (payoutAndFlavour.Item1 > 0)
             {
                 account.Miunies += payoutAndFlavour.Item1;
-                GlobalUserAccounts.SaveAccounts();
+                _globalUserAccounts.SaveAccounts();
             }            
 
             await ReplyAsync(slotEmojis);

@@ -37,7 +37,7 @@ namespace CommunityBot.Entities
 
         /* Add more values to store */
         
-        public GlobalGuildAccount Modify(Action<GuildAccountSettings> func)
+        public GlobalGuildAccount Modify(Action<GuildAccountSettings> func, GlobalGuildAccounts globalGuildAccounts)
         {
             var settings = new GuildAccountSettings();
             func(settings);
@@ -56,7 +56,7 @@ namespace CommunityBot.Entities
                 BotData = settings.BotData.Value;
             if (settings.RoleByPhraseSettings.IsSpecified)
                 RoleByPhraseSettings = settings.RoleByPhraseSettings.Value;
-            GlobalGuildAccounts.SaveAccounts(Id);
+            globalGuildAccounts.SaveAccounts(Id);
             return this;
         }
         

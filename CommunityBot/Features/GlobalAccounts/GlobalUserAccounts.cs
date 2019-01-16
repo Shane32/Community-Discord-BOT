@@ -9,23 +9,25 @@ using System.Linq;
 
 namespace CommunityBot.Features.GlobalAccounts
 {
-    internal static class GlobalUserAccounts
+    public class GlobalUserAccounts : IGlobalAccounts, IGlobalUserAccounts
     {
-        private static readonly ConcurrentDictionary<ulong, GlobalUserAccount> userAccounts = new ConcurrentDictionary<ulong, GlobalUserAccount>();
-        private static readonly DirectoryInfo _directoryInfo;
+        private readonly ConcurrentDictionary<ulong, GlobalUserAccount> userAccounts = new ConcurrentDictionary<ulong, GlobalUserAccount>();
+        private readonly DirectoryInfo _directoryInfo;
+        private readonly JsonDataStorage _jsonDataStorage;
 
-        private static readonly string _directoryPath =
+        private readonly string _directoryPath =
             Path.Combine(Constants.ResourceFolder, Constants.UserAccountsFolder);
 
-        static GlobalUserAccounts()
+        public GlobalUserAccounts(JsonDataStorage jsonDataStorage)
         {
+            _jsonDataStorage = jsonDataStorage;
             _directoryInfo = Directory.CreateDirectory(_directoryPath);
             var files = _directoryInfo.GetFiles("*.json");
             if (files.Length > 0)
             {
                 foreach (var file in files)
                 {
-                    var user = InversionOfControl.Container.GetInstance<JsonDataStorage>().RestoreObject<GlobalUserAccount>(Path.Combine(file.Directory.Name, file.Name));
+                    var user = jsonDataStorage.RestoreObject<GlobalUserAccount>(Path.Combine(file.Directory.Name, file.Name));
                     userAccounts.TryAdd(user.Id, user);
                 }
             }
@@ -36,13 +38,13 @@ namespace CommunityBot.Features.GlobalAccounts
         }
 
         
-        internal static string GetAccountFilePath(ulong id)
+        public string GetAccountFilePath(ulong id)
         {
             var filePath = Path.Combine(Path.Combine(_directoryPath, $"{id}.json"));
             return File.Exists(filePath) ? filePath : String.Empty;
         }
 
-        internal static bool DeleteAccountFile(ulong accountId)
+        public bool DeleteAccountFile(ulong accountId)
         {
             if (!userAccounts.TryRemove(accountId, out var account)) return false;
             var file = GetAccountFilePath(accountId);
@@ -51,27 +53,27 @@ namespace CommunityBot.Features.GlobalAccounts
             return true;
         }
         
-        internal static GlobalUserAccount GetUserAccount(ulong id)
+        public GlobalUserAccount GetById(ulong id)
         {
             return userAccounts.GetOrAdd(id, (key) =>
             {
                 var newAccount = new GlobalUserAccount(id);
-                InversionOfControl.Container.GetInstance<JsonDataStorage>().StoreObject(newAccount, Path.Combine(Constants.UserAccountsFolder, $"{id}.json"), useIndentations: true);
+                _jsonDataStorage.StoreObject(newAccount, Path.Combine(Constants.UserAccountsFolder, $"{id}.json"), useIndentations: true);
                 return newAccount;
             });
         }
 
-        internal static GlobalUserAccount GetUserAccount(IUser user)
+        public GlobalUserAccount GetFromDiscordUser(IUser user)
         {
-            return GetUserAccount(user.Id);
+            return GetById(user.Id);
         }
 
-        internal static List<GlobalUserAccount> GetAllAccounts()
+        public List<GlobalUserAccount> GetAllAccounts()
         {
             return userAccounts.Values.ToList();
         }
 
-        internal static List<GlobalUserAccount> GetFilteredAccounts(Func<GlobalUserAccount, bool> filter)
+        public List<GlobalUserAccount> GetFilteredAccounts(Func<GlobalUserAccount, bool> filter)
         {
             return userAccounts.Values.Where(filter).ToList();
         }
@@ -79,7 +81,7 @@ namespace CommunityBot.Features.GlobalAccounts
         /// <summary>
         /// This rewrites ALL UserAccounts to the harddrive... Strongly recommend to use SaveAccounts(id1, id2, id3...) where possible instead
         /// </summary>
-        internal static void SaveAccounts()
+        public void SaveAccounts()
         {
             foreach (var id in userAccounts.Keys)
             {
@@ -90,12 +92,11 @@ namespace CommunityBot.Features.GlobalAccounts
         /// <summary>
         /// Saves one or multiple Accounts by provided Ids
         /// </summary>
-        internal static void SaveAccounts(params ulong[] ids)
+        public void SaveAccounts(params ulong[] ids)
         {
-            var dataStorage = InversionOfControl.Container.GetInstance<JsonDataStorage>();
             foreach (var id in ids)
             {
-                dataStorage.StoreObject(GetUserAccount(id), Path.Combine(Constants.UserAccountsFolder, $"{id}.json"), useIndentations: true);
+                _jsonDataStorage.StoreObject(GetById(id), Path.Combine(Constants.UserAccountsFolder, $"{id}.json"), useIndentations: true);
             }
         }
     }

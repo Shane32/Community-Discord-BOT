@@ -11,9 +11,9 @@ namespace CommunityBot.Features.Onboarding
     {
         private readonly IEnumerable<IOnboardingTask> tasks;
 
-        public Onboarding()
+        public Onboarding(IServiceProvider serviceProvider)
         {
-            tasks = GetOnboardingTasks();
+            tasks = GetOnboardingTasks(serviceProvider);
         }
 
         public void JoinedGuild(IGuild guild)
@@ -24,7 +24,7 @@ namespace CommunityBot.Features.Onboarding
             }
         }
 
-        private static IEnumerable<IOnboardingTask> GetOnboardingTasks()
+        private static IEnumerable<IOnboardingTask> GetOnboardingTasks(IServiceProvider serviceProvider)
         {
             var taskType = typeof(IOnboardingTask);
 
@@ -33,7 +33,7 @@ namespace CommunityBot.Features.Onboarding
             return AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(s => s.GetTypes())
                 .Where(p => taskType.IsAssignableFrom(p) && !p.IsInterface)
-                .Select(t => (IOnboardingTask)InversionOfControl.Container.GetInstance(t));
+                .Select(t => (IOnboardingTask)serviceProvider.GetService(t));
         }
     }
 }

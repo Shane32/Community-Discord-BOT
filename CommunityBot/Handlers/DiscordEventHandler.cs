@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CommunityBot.Configuration;
 using CommunityBot.Features;
+using CommunityBot.Features.GlobalAccounts;
 using CommunityBot.Features.Lists;
 using CommunityBot.Features.Onboarding;
 using CommunityBot.Features.Trivia;
@@ -29,8 +30,13 @@ namespace CommunityBot.Handlers
         private readonly TriviaGames _triviaGames;
         private readonly ListManager _listManager;
         private readonly IOnboarding _onboarding;
+        private readonly BlogHandler _blogHandler;
+        private readonly Announcements _announcements;
+        private readonly MessageRewardHandler _messageRewardHandler;
+        private readonly RepeatedTaskFunctions _repeatedTaskFunctions;
+        private readonly GlobalGuildAccounts _globalGuildAccounts;
 
-        public DiscordEventHandler(Logger logger, TriviaGames triviaGames, DiscordSocketClient client, CommandHandler commandHandler, ApplicationSettings applicationSettings, ListManager listManager, IOnboarding onboarding)
+        public DiscordEventHandler(Logger logger, TriviaGames triviaGames, DiscordSocketClient client, CommandHandler commandHandler, ApplicationSettings applicationSettings, ListManager listManager, IOnboarding onboarding, BlogHandler blogHandler, Announcements announcements, MessageRewardHandler messageRewardHandler, RepeatedTaskFunctions repeatedTaskFunctions, GlobalGuildAccounts globalGuildAccounts)
         {
             _logger = logger;
             _client = client;
@@ -39,6 +45,11 @@ namespace CommunityBot.Handlers
             _triviaGames = triviaGames;
             _listManager = listManager;
             _onboarding = onboarding;
+            _blogHandler = blogHandler;
+            _announcements = announcements;
+            _messageRewardHandler = messageRewardHandler;
+            _repeatedTaskFunctions = repeatedTaskFunctions;
+            _globalGuildAccounts = globalGuildAccounts;
         }
 
         public void InitDiscordEvents()
@@ -183,7 +194,7 @@ namespace CommunityBot.Handlers
         private async Task MessageReceived(SocketMessage message)
         {
             _commandHandler.HandleCommandAsync(message);
-            MessageRewardHandler.HandleMessageRewards(message);
+            _messageRewardHandler.HandleMessageRewards(message);
         }
 
         private async Task MessageUpdated(Cacheable<IMessage, ulong> cacheMessageBefore, SocketMessage messageAfter, ISocketMessageChannel channel)
@@ -200,7 +211,7 @@ namespace CommunityBot.Handlers
             (new ListReactionHandler()).HandleReactionAdded(new ListHelper.UserInfo(user.Id, roleIds), _listManager, cacheMessage, reaction);
 
             _triviaGames.HandleReactionAdded(cacheMessage, reaction);
-            BlogHandler.ReactionAdded(reaction);
+            _blogHandler.ReactionAdded(reaction);
         }
 
         private async Task ReactionRemoved(Cacheable<IUserMessage, ulong> cacheMessage, ISocketMessageChannel channel, SocketReaction reaction)
@@ -215,8 +226,8 @@ namespace CommunityBot.Handlers
 
         private async Task Ready()
         {
-            RepeatedTaskFunctions.InitRepeatedTasks();
-            ServerBots.Init();
+            _repeatedTaskFunctions.InitRepeatedTasks();
+            ServerBots.Init(_globalGuildAccounts);
          
         }
 
@@ -257,13 +268,12 @@ namespace CommunityBot.Handlers
 
         private async Task UserJoined(SocketGuildUser user)
         {
-            Announcements.UserJoined(user);
-            
+            _announcements.UserJoined(user);
         }
 
         private async Task UserLeft(SocketGuildUser user)
         {
-            Announcements.UserLeft(user, _client);
+            _announcements.UserLeft(user, _client);
         }
 
         private async Task UserUnbanned(SocketUser user, SocketGuild guild)

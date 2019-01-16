@@ -7,17 +7,22 @@ using Discord.Commands;
 namespace CommunityBot.Modules
 {
     public class ServerSetup : ModuleBase<MiunieCommandContext>
-
     {
+        private readonly GlobalGuildAccounts _globalGuildAccounts;
+
+        public ServerSetup (GlobalGuildAccounts globalGuildAccounts)
+        {
+            _globalGuildAccounts = globalGuildAccounts;
+        }
 
         [Command("offLog")]
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task SetServerActivivtyLogOff()
         {
-            var guild = GlobalGuildAccounts.GetGuildAccount(Context.Guild);
+            var guild = _globalGuildAccounts.GetFromDiscordGuild(Context.Guild);
             guild.LogChannelId = 0;
             guild.ServerActivityLog = 0;
-            GlobalGuildAccounts.SaveAccounts(Context.Guild.Id);
+            _globalGuildAccounts.SaveAccounts(Context.Guild.Id);
 
             await ReplyAsync("No more Logging");
 
@@ -35,7 +40,7 @@ namespace CommunityBot.Modules
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task SetServerActivivtyLog(ulong logChannel = 0)
         {
-            var guild = GlobalGuildAccounts.GetGuildAccount(Context.Guild);
+            var guild = _globalGuildAccounts.GetFromDiscordGuild(Context.Guild);
 
             if (logChannel != 0)
             {
@@ -44,7 +49,7 @@ namespace CommunityBot.Modules
                     var channel = Context.Guild.GetTextChannel(logChannel);
                     guild.LogChannelId = channel.Id;
                     guild.ServerActivityLog = 1;
-                    GlobalGuildAccounts.SaveAccounts(Context.Guild.Id);
+                    _globalGuildAccounts.SaveAccounts(Context.Guild.Id);
 
                 }
                 catch
@@ -59,7 +64,7 @@ namespace CommunityBot.Modules
                 case 1:
                     guild.ServerActivityLog = 0;
                     guild.LogChannelId = 0;
-                    GlobalGuildAccounts.SaveAccounts(Context.Guild.Id);
+                    _globalGuildAccounts.SaveAccounts(Context.Guild.Id);
 
 
                         await ReplyAsync("No more logging any activity now");
@@ -75,7 +80,7 @@ namespace CommunityBot.Modules
                             {
                                 guild.LogChannelId = tryChannel.Id;
                                 guild.ServerActivityLog = 1;
-                                GlobalGuildAccounts.SaveAccounts(Context.Guild.Id);
+                                _globalGuildAccounts.SaveAccounts(Context.Guild.Id);
 
                                 await ReplyAsync(
                                     $"Now we log everything to {tryChannel.Mention}, you may rename and move it.");
@@ -87,7 +92,7 @@ namespace CommunityBot.Modules
                             var channel = Context.Guild.CreateTextChannelAsync("OctoLogs");
                             guild.LogChannelId = channel.Result.Id;
                             guild.ServerActivityLog = 1;
-                            GlobalGuildAccounts.SaveAccounts(Context.Guild.Id);
+                            _globalGuildAccounts.SaveAccounts(Context.Guild.Id);
 
                             await ReplyAsync(
                                 $"Now we log everything to {channel.Result.Mention}, you may rename and move it.");
@@ -110,7 +115,7 @@ namespace CommunityBot.Modules
         {
 
             string text;
-            var guild = GlobalGuildAccounts.GetGuildAccount(Context.Guild);
+            var guild = _globalGuildAccounts.GetFromDiscordGuild(Context.Guild);
             if (role == null)
             {
                 guild.RoleOnJoin = null;
@@ -122,7 +127,7 @@ namespace CommunityBot.Modules
                 text = $"Everyone will now be getting {role} role on join!";
             }
 
-            GlobalGuildAccounts.SaveAccounts(Context.Guild.Id);
+            _globalGuildAccounts.SaveAccounts(Context.Guild.Id);
             await ReplyAsync(text);
 
         }
