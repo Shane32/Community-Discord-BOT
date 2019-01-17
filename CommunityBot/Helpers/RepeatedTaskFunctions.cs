@@ -14,10 +14,12 @@ namespace CommunityBot.Helpers
     {
         private readonly GlobalUserAccounts _globalUserAccounts;
         private readonly RepeatedTaskHandler _repeatedTaskHandler;
-        public RepeatedTaskFunctions(GlobalUserAccounts globalUserAccounts, RepeatedTaskHandler repeatedTaskHandler)
+        private readonly DiscordSocketClient _client;
+        public RepeatedTaskFunctions(GlobalUserAccounts globalUserAccounts, RepeatedTaskHandler repeatedTaskHandler, DiscordSocketClient client)
         {
             _globalUserAccounts = globalUserAccounts;
             _repeatedTaskHandler = repeatedTaskHandler;
+            _client = client;
         }
 
         public Task InitRepeatedTasks()
@@ -42,7 +44,7 @@ namespace CommunityBot.Helpers
             var accounts = _globalUserAccounts.GetFilteredAccounts(acc => acc.Reminders.Any(rem => rem.DueDate < now));
             foreach (var account in accounts)
             {
-                var guildUser = Global.Client.GetUser(account.Id);
+                var guildUser = _client.GetUser(account.Id);
                 var dmChannel = await guildUser?.GetOrCreateDMChannelAsync();
                 if (dmChannel == null) return;
 

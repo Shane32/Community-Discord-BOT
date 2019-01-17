@@ -8,11 +8,11 @@ namespace CommunityBot.Extensions
     public class BotCommandContext : SocketCommandContext
     {
         public GlobalUserAccount UserAccount { get; }
-        private readonly GlobalUserAccounts _globalUserAccounts;
+        public DiscordSocketClient Client { get; }
         
         public BotCommandContext(DiscordSocketClient client, SocketUserMessage msg, GlobalUserAccounts globalUserAccounts) : base(client, msg)
         {
-            this._globalUserAccounts = globalUserAccounts;
+            this.Client = client;
 
             UserAccount = User == null ? null : globalUserAccounts.GetUserAccount(User);
         }

@@ -89,7 +89,7 @@ namespace CommunityBot.Modules
         {
             EmbedBuilder builder = new EmbedBuilder();
             builder.Color = new Color(114, 137, 218);
-            builder.AddField("Version", $"The current version of the bot is: `{Global.version}`");
+            builder.AddField("Version", $"The current version of the bot is: `{Global.Version}`");
             await ReplyAsync("", false, builder.Build());
         }
 
@@ -232,7 +232,7 @@ namespace CommunityBot.Modules
             "**[ 🢂 🐞 HERE 🐞 🢀 ](https://github.com/discord-bot-tutorial/Community-Discord-BOT/issues/new/choose)**" + "\n\n\n" +
             "(*If button doesnt work: https://github.com/discord-bot-tutorial/Community-Discord-BOT/issues/new/choose*)");
             embed.WithFooter("Your help is more than welcome!");
-            embed.WithAuthor(Global.Client.CurrentUser);
+            embed.WithAuthor(Context.Client.CurrentUser);
             embed.WithCurrentTimestamp();
 
             await ReplyAsync("", false, embed.Build());

@@ -90,7 +90,7 @@ namespace CommunityBot.Modules.Account
         {
             await Context.Channel.SendMessageAsync(
                 $"{Context.User.Mention} {message}. Reply with `{optionYes}` or `{optionNo}`");
-            var response = await Context.Channel.AwaitMessage(msg => EvaluateResponse(msg, optionYes, optionNo));
+            var response = await this.AwaitMessage(Context.Channel, msg => EvaluateResponse(msg, optionYes, optionNo));
             return response;
         }
 

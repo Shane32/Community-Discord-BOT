@@ -3,53 +3,18 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using CommunityBot.Extensions;
 using Discord;
+using Discord.Commands;
 using Discord.WebSocket;
 
 namespace CommunityBot.Helpers
 {
     public static class DiscordExtensions
     {
-        // Extensions for Discord Class SocketGuild
-        public static SocketGuildUser FirstUserByName(this SocketGuild guild, string name)
+        public static Task<SocketMessage> AwaitMessage(this ModuleBase<BotCommandContext> module, Func<SocketMessage, bool> filter = null, int timeoutInMs = 30000)
         {
-            if (MentionUtils.TryParseUser(name, out var id))
-                return guild.Users.FirstOrDefault(user => user.Id == id);
-
-            return guild.Users.FirstOrDefault(user =>
-                Regex.IsMatch(user.Username, name, RegexOptions.IgnoreCase)||
-                Regex.IsMatch(user.Nickname ?? "", name, RegexOptions.IgnoreCase)
-            );
-        }
-
-        public static SocketTextChannel FirstTextChannelByName(this SocketGuild guild, string name)
-        {
-            if (MentionUtils.TryParseChannel(name, out var id))
-                return guild.TextChannels.FirstOrDefault(channel => channel.Id == id);
-
-            return guild.TextChannels.FirstOrDefault(channel =>
-                Regex.IsMatch(channel.Name, name, RegexOptions.IgnoreCase)
-            );
-        }
-
-        public static SocketVoiceChannel FirstVoiceChannelByName(this SocketGuild guild, string name)
-        {
-            if (MentionUtils.TryParseChannel(name, out var id))
-                return guild.VoiceChannels.FirstOrDefault(channel => channel.Id == id);
-
-            return guild.VoiceChannels.FirstOrDefault(channel =>
-                Regex.IsMatch(channel.Name, name, RegexOptions.IgnoreCase)
-            );
-        }
-
-        public static SocketRole FirstRoleByName(this SocketGuild guild, string name)
-        {
-            if (MentionUtils.TryParseRole(name, out var id))
-                return guild.Roles.FirstOrDefault(role => role.Id == id);
-
-            return guild.Roles.FirstOrDefault(role =>
-                Regex.IsMatch(role.Name, name, RegexOptions.IgnoreCase)
-            );
+            return AwaitMessage(module, module.Context.Channel, filter, timeoutInMs);
         }
 
         /// <summary>
@@ -60,7 +25,7 @@ namespace CommunityBot.Helpers
         /// <param name="filter">Optional - if not provided first message in channel is match</param>
         /// <param name="timeoutInMs">Optional - if not provided 30 seconds</param>
         /// <returns>Awaitable Task which resolves in the first SocketMessage that matches the filter</returns>
-        public static async Task<SocketMessage> AwaitMessage(this IMessageChannel channel, Func<SocketMessage, bool> filter = null, int timeoutInMs = 30000)
+        public static async Task<SocketMessage> AwaitMessage(this ModuleBase<BotCommandContext> module, IMessageChannel channel, Func<SocketMessage, bool> filter = null, int timeoutInMs = 30000)
         {
             SocketMessage responseMessage = null;
             var cancler = new CancellationTokenSource();
@@ -68,14 +33,14 @@ namespace CommunityBot.Helpers
 
             // Adding function that handles filtering and 
             // assigning the respondMessage the correct value
-            Global.Client.MessageReceived += OnMessageReceived;
+            module.Context.Client.MessageReceived += OnMessageReceived;
             // Waiting for the timeout to run out or the task.Delay to be canceled due to a matched message
             try { await waiter; }
             catch (TaskCanceledException) { }
             finally
             {
                 // Remove the function from the event handlers list
-                Global.Client.MessageReceived -= OnMessageReceived;
+                module.Context.Client.MessageReceived -= OnMessageReceived;
             }
             return responseMessage;
 

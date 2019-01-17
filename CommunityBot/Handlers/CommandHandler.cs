@@ -29,7 +29,6 @@ namespace CommunityBot.Handlers
         public async Task InitializeAsync()
         {
             await _cmdService.AddModulesAsync(Assembly.GetEntryAssembly(), _serviceProvider);
-            Global.Client = _client;
         }
 
         public async Task HandleCommandAsync(SocketMessage s)

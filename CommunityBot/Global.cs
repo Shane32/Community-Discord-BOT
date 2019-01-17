@@ -12,39 +12,15 @@ namespace CommunityBot
 {
     public static class Global
     {
-        internal static DiscordSocketClient Client { get; set; }
-        internal static readonly String version = Assembly.GetExecutingAssembly().GetName().Version.ToString().TrimEnd('0').TrimEnd('.');
+        //internal static DiscordSocketClient Client { get; set; }
+        internal static readonly String Version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
         // Global Helper methods
-
-        public static string ReplacePlacehoderStrings(this string messageString, IGuildUser user = null)
-        {
-            var result = messageString;
-            result = ReplaceGuildUserPlaceholderStrings(result, user);
-            result = ReplaceClientPlaceholderStrings(result);
-            return result;
-        }
-
-        private static string ReplaceGuildUserPlaceholderStrings(string messageString, IGuildUser user)
-        {
-            if (user == null) return messageString;
-            return messageString.Replace("<username>", user.Nickname ?? user.Username)
-                .Replace("<usermention>", user.Mention)
-                .Replace("<guildname>", user.Guild.Name);
-        }
-
-        private static string ReplaceClientPlaceholderStrings(string messageString)
-        {
-            if (Client == null) return messageString;
-            return messageString.Replace("<botmention>", Client.CurrentUser.Mention)
-                .Replace("<botdiscriminator>", Client.CurrentUser.Discriminator)
-                .Replace("<botname>", Client.CurrentUser.Username);
-        }
 
         public static async Task<string> SendWebRequest(string requestUrl)
         {
             using (var client = new HttpClient(new HttpClientHandler()))
             {
-                client.DefaultRequestHeaders.Add("User-Agent", "Community-Discord-BOT");
+                client.DefaultRequestHeaders.Add("User-Agent", "Event-Discord-BOT");
                 using (var response = await client.GetAsync(requestUrl))
                 {
                     if (response.StatusCode != HttpStatusCode.OK)
