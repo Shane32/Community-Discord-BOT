@@ -33,7 +33,7 @@ namespace CommunityBot.Modules
             var dmChannel = await Context.User.GetOrCreateDMChannelAsync();
 
             await dmChannel.SendMessageAsync("Do you like this?");
-            var temp = (await dmChannel.AwaitMessage(msg => EvaluateResponse(msg, "yes", "no"))).Content;
+            var temp = (await this.AwaitMessage(dmChannel, msg => EvaluateResponse(msg, "yes", "no"))).Content;
             await dmChannel.SendMessageAsync("Answer: " + temp);
 
             bool EvaluateResponse(SocketMessage arg, params String[] options)
@@ -42,7 +42,7 @@ namespace CommunityBot.Modules
             await dmChannel.SendMessageAsync("Enter the event title:");
 
             Console.WriteLine("Waiting for reply");
-            var reply = await dmChannel.AwaitMessage(null, 60000);
+            var reply = await this.AwaitMessage(dmChannel, null, 60000);
             Console.WriteLine("Reply received");
             await dmChannel.SendMessageAsync("You entered: " + reply.Content);
             Console.WriteLine("Reply: " + reply.Content);
