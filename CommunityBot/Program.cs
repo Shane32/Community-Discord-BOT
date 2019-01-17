@@ -23,12 +23,11 @@ namespace CommunityBot
         {
             BlackBox.Initialize();
 
+            Bot bot = null;
             try
             {
-                using (Bot bot = new Bot(args))
-                {
-                    await bot.Run();
-                }
+                bot = new Bot(args);
+                await bot.Run();
 
                 do
                 {
@@ -39,6 +38,10 @@ namespace CommunityBot
             catch (Exception ex)
             {
                 Global.WriteColoredLine(ex.ToString(), ConsoleColor.Red);
+            }
+            finally
+            {
+                bot?.Dispose();
             }
 
         }
