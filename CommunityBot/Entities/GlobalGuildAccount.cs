@@ -19,7 +19,7 @@ namespace CommunityBot.Entities
 
         public ulong LogChannelId { get; set; }
 
-        public List<EventChannel> EventChannels { get; set; };
+        public List<EventChannel> EventChannels { get; set; }
 
         /* Add more values to store */
         
