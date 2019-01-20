@@ -8,7 +8,8 @@ namespace CommunityBot.Entities
     {
         public string Title { get; set; }
         public string Description { get; set; }
-        public DateTime When { get; set; }
+        public DateTimeOffset When { get; set; }
+        public string TimeZone { get; set; }
         public int NumPlayers { get; set; }
         public ulong CreatorUserId { get; set; }
         public ulong EventMessageId { get; set; }

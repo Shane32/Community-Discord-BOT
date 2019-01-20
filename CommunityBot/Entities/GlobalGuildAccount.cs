@@ -19,9 +19,7 @@ namespace CommunityBot.Entities
 
         public ulong LogChannelId { get; set; }
 
-        public ulong EventListingChannelId { get; set; }
-
-        public List<EventListing> EventListings { get; set; }
+        public List<EventChannel> EventChannels { get; set; };
 
         /* Add more values to store */
         

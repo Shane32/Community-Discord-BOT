@@ -1,4 +1,5 @@
 ﻿using CommunityBot.Configuration;
+using CommunityBot.Features;
 using CommunityBot.Features.GlobalAccounts;
 using CommunityBot.Features.RepeatedTasks;
 using CommunityBot.Handlers;
@@ -76,6 +77,8 @@ namespace CommunityBot
             serviceCollection.AddSingleton<BotSettings>();
             serviceCollection.AddSingleton<JsonDataStorage>();
             serviceCollection.AddSingleton<RepeatedTaskHandler>();
+
+            serviceCollection.AddSingleton<IEventLogic, EventLogic>();
         }
 
     }
