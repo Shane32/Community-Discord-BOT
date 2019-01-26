@@ -2,7 +2,9 @@
 using CommunityBot.Entities;
 using Discord;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace CommunityBot.Features.GlobalAccounts
 {
@@ -24,10 +26,11 @@ namespace CommunityBot.Features.GlobalAccounts
                     serverAccounts.TryAdd(server.Id, server);
                 }
             }
-            else
-            {
-                serverAccounts = new ConcurrentDictionary<ulong, GlobalGuildAccount>();
-            }
+        }
+
+        public IEnumerable<KeyValuePair<ulong, GlobalGuildAccount>> GetAll()
+        {
+            return serverAccounts.ToArray();
         }
 
         public GlobalGuildAccount GetGuildAccount(ulong id)
@@ -50,10 +53,7 @@ namespace CommunityBot.Features.GlobalAccounts
         /// </summary>
         public void SaveAccounts()
         {
-            foreach (var id in serverAccounts.Keys)
-            {
-                SaveAccounts(id);
-            }
+            SaveAccounts(serverAccounts.Keys.ToArray());
         }
 
         /// <summary>

@@ -19,7 +19,9 @@ namespace CommunityBot.Entities
 
         public ulong LogChannelId { get; set; }
 
-        public List<EventChannel> EventChannels { get; set; }
+        public List<EventChannel> EventChannels { get; set; } = new List<EventChannel>();
+
+        public List<int> ReminderTimes { get; set; } = new List<int>();
 
         /* Add more values to store */
         
